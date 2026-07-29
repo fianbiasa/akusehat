@@ -19,3 +19,4 @@ require __DIR__.'/admin.php';
 require __DIR__.'/onboarding.php';
 require __DIR__.'/profile.php';
 require __DIR__.'/kb.php';
+require __DIR__.'/ai.php';

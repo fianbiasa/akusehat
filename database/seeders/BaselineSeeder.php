@@ -19,6 +19,8 @@ class BaselineSeeder extends Seeder
         $this->call(KbNutritionArticleSeeder::class);
         $this->call(KbFaqSeeder::class);
         $this->call(RuleEngineRuleSeeder::class);
+        $this->call(AiProviderSeeder::class);
+        $this->call(AiPromptTemplateSeeder::class);
         $this->call(OnboardingQuestionSeeder::class);
     }
 }

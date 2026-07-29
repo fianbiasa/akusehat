@@ -5,7 +5,7 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { usePermission } from '@/hooks/use-permission';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, ListChecks, ShieldCheck, Users } from 'lucide-react';
+import { BookOpen, Bot, Folder, LayoutGrid, ListChecks, ShieldCheck, Users } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -31,6 +31,11 @@ const adminNavItems: NavItem[] = [
         title: 'Rule Engine',
         url: '/admin/rule-engine/rules',
         icon: ListChecks,
+    },
+    {
+        title: 'AI Providers',
+        url: '/admin/ai/providers',
+        icon: Bot,
     },
 ];
 

@@ -109,4 +109,19 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(BodyMeasurement::class);
     }
+
+    public function aiSettings(): HasMany
+    {
+        return $this->hasMany(UserAiSetting::class);
+    }
+
+    public function aiMemories(): HasMany
+    {
+        return $this->hasMany(AiMemory::class);
+    }
+
+    public function aiRecommendations(): HasMany
+    {
+        return $this->hasMany(AiRecommendation::class);
+    }
 }

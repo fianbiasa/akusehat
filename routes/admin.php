@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AiProviderController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\RuleEngineController;
 use App\Http\Controllers\Admin\UserController;
@@ -24,5 +25,13 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::patch('rules/{rule}', [RuleEngineController::class, 'update'])->name('rules.update');
         Route::delete('rules/{rule}', [RuleEngineController::class, 'destroy'])->name('rules.destroy');
         Route::post('rules/{rule}/test', [RuleEngineController::class, 'test'])->name('rules.test');
+    });
+
+    Route::middleware('permission:ai.manage')->prefix('ai')->name('ai.')->group(function () {
+        Route::get('providers', [AiProviderController::class, 'index'])->name('providers.index');
+        Route::post('providers', [AiProviderController::class, 'store'])->name('providers.store');
+        Route::patch('providers/{provider}', [AiProviderController::class, 'update'])->name('providers.update');
+        Route::post('providers/{provider}/models', [AiProviderController::class, 'storeModel'])->name('providers.models.store');
+        Route::patch('models/{model}', [AiProviderController::class, 'updateModel'])->name('models.update');
     });
 });

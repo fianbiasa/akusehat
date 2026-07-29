@@ -78,26 +78,26 @@
 
 ## Phase 5 — AI Provider Layer
 
-- [ ] Migrations: `ai_providers`, `ai_models`, `user_ai_settings`, `ai_prompt_templates`, `ai_memories`, `ai_recommendations`, `ai_request_logs`
-- [ ] Define `AIProviderInterface` contract (per [06-AI-Provider-Interface.md](06-AI-Provider-Interface.md) §2)
-- [ ] Implement `OpenAIProvider`
-- [ ] Implement `ClaudeProvider`
-- [ ] Implement `GroqProvider`
-- [ ] Implement `GeminiProvider`
-- [ ] Implement `OllamaProvider`
-- [ ] Implement `LMStudioProvider`
-- [ ] `AIProviderServiceProvider`: bind `driver_class` → concrete resolution
-- [ ] `PromptBuilderService`: template + variable resolution + fixed JSON instruction block
-- [ ] Seed `ai_prompt_templates` from `prompts/*.txt` (onboarding, meal-plan, workout, weekly-review, daily-chat, coach-review)
-- [ ] `AIGatewayService`: provider resolution, call timing, logging to `ai_request_logs`, failover to secondary provider
-- [ ] `AIResponseProcessor`: JSON decode + schema validation + retry (≤2) + Rule-Engine fallback
-- [ ] Member: AI Settings CRUD (provider/model/API key/temperature) + "Test Connection" + React page ([wireframe/settings.md](../wireframe/settings.md))
-- [ ] Admin: AI Provider/Model CRUD + React pages
-- [ ] Admin: Prompt Template editor (with version bump on save) + React page
-- [ ] Admin: AI request log viewer + cost dashboard
-- [ ] Unit tests: each provider adapter against a mocked HTTP client (request shape correctness)
-- [ ] Unit tests: `AIResponseProcessor` retry/fallback branches
-- [ ] Integration test: at least 2 real providers (1 cloud, 1 local) end-to-end against a sandbox/dev key
+- [x] Migrations: `ai_providers`, `ai_models`, `user_ai_settings`, `ai_prompt_templates`, `ai_memories`, `ai_recommendations`, `ai_request_logs` — `user_ai_settings` deliberately drops `mysql.sql`'s literal `UNIQUE(user_id, is_default)` index (MySQL has no partial/filtered unique index, so a plain 2-column unique also caps *non*-default rows at one per user, which breaks FR-AI-06 provider failover); "one default per user" is enforced app-side instead (every write path unsets others in the same transaction). `ai_memories`/`ai_recommendations.user_program_id` are nullable plain columns without an FK for now — the constraint lands in Phase 6 once `user_programs` exists.
+- [x] Define `AIProviderInterface` contract (per [06-AI-Provider-Interface.md](06-AI-Provider-Interface.md) §2)
+- [x] Implement `OpenAIProvider`
+- [x] Implement `ClaudeProvider`
+- [x] Implement `GroqProvider`
+- [x] Implement `GeminiProvider`
+- [x] Implement `OllamaProvider`
+- [x] Implement `LMStudioProvider`
+- [x] `AIProviderFactory`: resolves `driver_class` → concrete adapter instance (a factory rather than a dedicated `AIProviderServiceProvider`, since resolution needs a runtime `AiProvider`/`AiModel` row, not a static container binding)
+- [x] `PromptBuilderService`: template + variable resolution + fixed JSON instruction block (the instruction block lives in the seeded `prompts/*.txt` template text itself, per [07-Prompt-Engineering.md](07-Prompt-Engineering.md))
+- [x] Seed `ai_prompt_templates` from `prompts/*.txt` (onboarding, meal-plan, workout, weekly-review, daily-chat, coach-review)
+- [x] `AIGatewayService`: provider resolution, call timing, logging to `ai_request_logs`, failover to secondary provider
+- [x] `AIResponseProcessor`: JSON decode + schema validation + retry (≤2) + Rule-Engine fallback
+- [x] Member: AI Settings CRUD (provider/model/API key/temperature) + "Test Connection" + React page ([wireframe/settings.md](../wireframe/settings.md)) — shown as a list of configured provider rows (not the wireframe's single radio group), since failover requires more than one saved provider at a time
+- [x] Admin: AI Provider/Model CRUD + React pages
+- [ ] Admin: Prompt Template editor (with version bump on save) + React page — deferred; templates are seed-managed only for now
+- [ ] Admin: AI request log viewer + cost dashboard — deferred; `ai_request_logs` is written correctly (verified via tinker + tests) but has no viewer UI yet
+- [x] Unit tests: each provider adapter against a mocked HTTP client (request shape correctness)
+- [x] Unit tests: `AIResponseProcessor` retry/fallback branches
+- [ ] Integration test: at least 2 real providers (1 cloud, 1 local) end-to-end against a sandbox/dev key — not possible in this environment (no real API keys/local model server available); covered instead by `Http::fake()`-based tests plus a live HTTP smoke test that hit the real OpenAI API with an invalid key and a local Ollama endpoint with nothing listening, confirming both failure paths degrade gracefully over real network calls
 
 ## Phase 6 — Program Generation
 

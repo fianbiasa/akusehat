@@ -17,6 +17,11 @@ const sidebarNavItems: NavItem[] = [
         icon: null,
     },
     {
+        title: 'AI Provider',
+        url: '/ai/settings',
+        icon: null,
+    },
+    {
         title: 'Password',
         url: '/settings/password',
         icon: null,
