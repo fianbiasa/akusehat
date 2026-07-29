@@ -17,7 +17,7 @@ class RoleAssignmentTest extends TestCase
             'email' => 'new-member@example.com',
             'password' => 'password',
             'password_confirmation' => 'password',
-        ])->assertRedirect(route('dashboard', absolute: false));
+        ])->assertRedirect(route('onboarding.index', absolute: false));
 
         $user = User::where('email', 'new-member@example.com')->firstOrFail();
 

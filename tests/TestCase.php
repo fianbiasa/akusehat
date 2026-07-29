@@ -2,16 +2,16 @@
 
 namespace Tests;
 
-use Database\Seeders\RolePermissionSeeder;
+use Database\Seeders\BaselineSeeder;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
     /**
-     * Baseline roles/permissions every RefreshDatabase test needs, since
-     * users.role_id is a required FK — see RolePermissionSeeder.
+     * Baseline data every RefreshDatabase test needs: roles/permissions
+     * (users.role_id is a required FK) and onboarding questions.
      */
     protected bool $seed = true;
 
-    protected string $seeder = RolePermissionSeeder::class;
+    protected string $seeder = BaselineSeeder::class;
 }

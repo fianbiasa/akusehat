@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Events\OnboardingCompleted;
+use App\Listeners\DispatchInitialProgramGeneration;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
@@ -26,5 +29,7 @@ class AppServiceProvider extends ServiceProvider
         // shorter lengths matching the Database Dictionary, so this only
         // affects bare $table->string() columns.
         Schema::defaultStringLength(191);
+
+        Event::listen(OnboardingCompleted::class, DispatchInitialProgramGeneration::class);
     }
 }

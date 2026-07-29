@@ -4,6 +4,18 @@ All notable changes to this specification/documentation set are recorded here. T
 
 ## [Unreleased] - Application build progress
 
+### Phase 2 — Onboarding (2026-07-29)
+- Migrations + models for `onboarding_questions`/`onboarding_sessions`/`onboarding_answers`, matching the Database Dictionary (note: `onboarding_answers` has no `created_at`/`updated_at`, only `answered_at` — `OnboardingAnswer::$timestamps = false`).
+- 55 seeded questions across identity/body/lifestyle/medical/preferences/goal (wireframe/onboarding.md only sketches step ranges, not literal text — authored here). Medications/allergies use a `validation_rules.repeatable` flag consumed by a generic repeatable-row React component, rather than a one-off special case.
+- Wizard API (`/onboarding/*`): resumable session start (idempotent — returns the existing `in_progress` session if one exists), per-question answer autosave advancing `current_step`, and a `complete` endpoint that 422s with the specific missing questions if any required question is unanswered.
+- React wizard shell (one question per screen, progress bar, back/skip/next) with input components per `input_type`, driven by plain `fetch` (`resources/js/lib/api.ts`) rather than Inertia visits, so answering a question doesn't trigger a full page reload.
+- `OnboardingCompleted` event → `DispatchInitialProgramGeneration` listener → `GenerateInitialProgram` job. The job is a **logging stub**: the real Goal → RuleEngine → AI pipeline is Phases 4-6, not built yet, so this intentionally doesn't fake program generation ahead of the layer it depends on.
+- Registration now redirects members to `/onboarding` instead of the dashboard; a new `onboarding.completed` middleware gates the dashboard (and future member-only routes) behind a completed wizard, scoped to the `member` role only.
+- Fixed a mass-assignment bug caught by the test suite before it ever reached production: `User::update(['onboarding_completed_at' => ...])` was silently dropped because that column isn't (and shouldn't be) in `$fillable` — it's system-managed, not user-editable. Fixed with `forceFill()` in the one legitimate place that sets it.
+- Full 55-question flow verified end-to-end over real HTTP (not just the in-process test suite): register → redirect to wizard → answer all questions → complete → session marked `completed`, `users.onboarding_completed_at` set, job visibly queued in Redis and processed cleanly.
+- Not done: Admin question-bank CRUD UI (create/edit/reorder/deactivate) — deferred alongside the rest of the Admin panel.
+- 49/49 tests passing.
+
 ### Phase 1 — Core / Auth / RBAC (2026-07-29)
 - Real `roles`/`permissions`/`role_permissions`/`users` migrations matching the Database Dictionary, replacing the starter kit's placeholder schema.
 - `Role`/`Permission` Eloquent models, `User::hasPermission()`/`hasRole()`, `EnsurePermission` middleware (`permission:<name>` route alias).

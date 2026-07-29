@@ -38,17 +38,17 @@
 
 ## Phase 2 — Onboarding
 
-- [ ] Migrations: `onboarding_questions`, `onboarding_sessions`, `onboarding_answers`
-- [ ] Seeder: ~55 questions across identity/body/goal/lifestyle/medical categories (content from [wireframe/onboarding.md](../wireframe/onboarding.md))
-- [ ] `OnboardingQuestion`, `OnboardingSession`, `OnboardingAnswer` models
-- [ ] Wizard API: start/resume session, submit answer, complete
-- [ ] React: Wizard shell (progress bar, back/next, skip-if-optional)
-- [ ] React: input components per `input_type` (text/number/date/single_choice/multi_choice/time/scale)
-- [ ] React: repeatable-row components (medications, allergies)
-- [ ] `OnboardingCompleted` event + listener dispatching `GenerateInitialProgram` job
+- [x] Migrations: `onboarding_questions`, `onboarding_sessions`, `onboarding_answers`
+- [x] Seeder: ~55 questions across identity/body/goal/lifestyle/medical categories (content from [wireframe/onboarding.md](../wireframe/onboarding.md)) — landed at 55 across identity/body/lifestyle/medical/preferences/goal
+- [x] `OnboardingQuestion`, `OnboardingSession`, `OnboardingAnswer` models
+- [x] Wizard API: start/resume session, submit answer, complete
+- [x] React: Wizard shell (progress bar, back/next, skip-if-optional)
+- [x] React: input components per `input_type` (text/number/date/single_choice/multi_choice/time/scale)
+- [x] React: repeatable-row components (medications, allergies) — driven by `onboarding_questions.validation_rules.repeatable`
+- [x] `OnboardingCompleted` event + listener dispatching `GenerateInitialProgram` job — job is a logging stub until the Rule Engine/AI Provider layer (Phases 4-6) exists
 - [ ] Admin: question bank CRUD (create/edit/reorder/deactivate) + React pages
-- [ ] Feature test: full wizard completion → event fired → job dispatched
-- [ ] Feature test: resume after partial completion
+- [x] Feature test: full wizard completion → event fired → job dispatched
+- [x] Feature test: resume after partial completion
 
 ## Phase 3 — Health Profile
 

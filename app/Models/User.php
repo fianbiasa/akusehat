@@ -6,6 +6,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -71,5 +72,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function hasPermission(string $name): bool
     {
         return $this->role->permissions()->where('name', $name)->exists();
+    }
+
+    public function onboardingSessions(): HasMany
+    {
+        return $this->hasMany(OnboardingSession::class);
     }
 }
