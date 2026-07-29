@@ -10,31 +10,31 @@
 
 ## Phase 0 — Project Setup
 
-- [ ] `laravel new` on Laravel 12 / PHP 8.4, configure `.env` for MySQL 8 + Redis
-- [ ] Install & configure Inertia.js + React + TypeScript
-- [ ] Install TailwindCSS + ShadCN/ui, set up base theme tokens
-- [ ] Install Laravel Sanctum, configure SPA stateful domains
-- [ ] Install Laravel Horizon for queue monitoring
-- [ ] Set up Vite build pipeline
-- [ ] Configure `composer.json`/`package.json` scripts (lint, test, format)
-- [ ] Set up CI pipeline (lint, static analysis via PHPStan/Larastan, PHPUnit/Pest, `npm test`, `composer audit`/`npm audit`)
-- [ ] Configure error tracking (Sentry or equivalent)
-- [ ] Set up local dev environment docs (README "Getting Started")
-- [ ] Create base folder structure for Services/Repositories/Contracts (per [04-Architecture.md](04-Architecture.md) §2)
+- [x] `laravel new` on Laravel 12 / PHP 8.4, configure `.env` for MySQL 8 + Redis
+- [x] Install & configure Inertia.js + React + TypeScript
+- [x] Install TailwindCSS + ShadCN/ui, set up base theme tokens
+- [x] Install Laravel Sanctum, configure SPA stateful domains
+- [x] Install Laravel Horizon for queue monitoring
+- [x] Set up Vite build pipeline
+- [x] Configure `composer.json`/`package.json` scripts (lint, test, format)
+- [ ] Set up CI pipeline (lint, static analysis via PHPStan/Larastan, PHPUnit/Pest, `npm test`, `composer audit`/`npm audit`) — workflow files exist in `.github/workflows/` but aren't pushed yet (current GitHub token lacks `workflow` scope)
+- [ ] Configure error tracking (Sentry or equivalent) — no Sentry DSN provided yet
+- [x] Set up local dev environment docs (README "Getting Started")
+- [x] Create base folder structure for Services/Repositories/Contracts (per [04-Architecture.md](04-Architecture.md) §2)
 
 ## Phase 1 — Core / Auth / RBAC
 
-- [ ] Migration: `roles`, `permissions`, `role_permissions`, `users` (per [database-schema/mysql.sql](../database-schema/mysql.sql))
-- [ ] Seeder: default roles (admin/coach/member) + baseline permission set
-- [ ] `User`, `Role`, `Permission` Eloquent models + relationships
-- [ ] `PermissionMiddleware` / policy classes enforcing `role_permissions`
-- [ ] Register/login/logout/password-reset controllers + Form Requests
-- [ ] Email verification flow
-- [ ] `GET /auth/me` endpoint
-- [ ] Admin: user CRUD controller + React pages
-- [ ] Admin: role/permission management controller + React pages
-- [ ] Unit tests: permission enforcement (positive + negative cases per role)
-- [ ] Feature tests: registration, login, password reset
+- [x] Migration: `roles`, `permissions`, `role_permissions`, `users` (per [database-schema/mysql.sql](../database-schema/mysql.sql))
+- [x] Seeder: default roles (admin/coach/member) + baseline permission set
+- [x] `User`, `Role`, `Permission` Eloquent models + relationships
+- [x] `PermissionMiddleware` / policy classes enforcing `role_permissions` (`EnsurePermission`, `permission:<name>` route alias)
+- [x] Register/login/logout/password-reset controllers + Form Requests
+- [x] Email verification flow
+- [x] `GET /auth/me` endpoint (`GET /api/v1/auth/me`, Sanctum-protected)
+- [x] Admin: user CRUD controller + React pages
+- [x] Admin: role/permission management controller + React pages
+- [x] Unit tests: permission enforcement (positive + negative cases per role)
+- [x] Feature tests: registration, login, password reset
 
 ## Phase 2 — Onboarding
 

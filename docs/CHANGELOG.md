@@ -1,6 +1,23 @@
 # Changelog
 
-All notable changes to this specification/documentation set are recorded here. This is a docs changelog (PRD/ERD/API spec/etc.), not the application's own release changelog — that will start once code exists.
+All notable changes to this specification/documentation set are recorded here. This is a docs changelog (PRD/ERD/API spec/etc.). As of 2026-07-29 the application itself exists (see entries below) — build progress is tracked here too, phase by phase per [11-Development-Checklist.md](11-Development-Checklist.md), rather than in a separate release changelog.
+
+## [Unreleased] - Application build progress
+
+### Phase 1 — Core / Auth / RBAC (2026-07-29)
+- Real `roles`/`permissions`/`role_permissions`/`users` migrations matching the Database Dictionary, replacing the starter kit's placeholder schema.
+- `Role`/`Permission` Eloquent models, `User::hasPermission()`/`hasRole()`, `EnsurePermission` middleware (`permission:<name>` route alias).
+- `RolePermissionSeeder`: baseline admin/coach/member roles and the permission set from PRD §10.
+- Registration assigns the `member` role by default; `GET /api/v1/auth/me` (Sanctum-protected) returns the user with role + permissions.
+- Admin panel: Users CRUD (search/filter by role & status, create/edit/soft-delete) and Roles & Permissions management (per-role permission matrix), both gated behind `permission:users.manage` / `permission:roles.manage`. Admin nav section only renders for users with `users.manage`.
+- Fixed an infra bug found via live smoke testing (not caught by the test suite, which runs in-process): server-wide ModSecurity (OWASP CRS) was blocking all PATCH/DELETE requests with a 403 before they reached Laravel. Fixed with a `tx.allowed_methods` override scoped to the `akusehat.web.id` vhost only (see the comment in `/etc/apache2/sites-available/akusehat.web.id.conf`, outside this repo).
+- 41/41 tests passing (Pest/PHPUnit, in-memory SQLite).
+
+### Phase 0 — Project Setup (2026-07-29)
+- Scaffolded Laravel 12 via `laravel/react-starter-kit` (Inertia + React + TypeScript + Tailwind + ShadCN), added Sanctum and Horizon.
+- Wired to the real MySQL/MariaDB database and Redis; serving live at `https://akusehat.web.id`.
+- Base `app/Services`, `app/Repositories`, `app/Contracts` folders per [04-Architecture.md](04-Architecture.md) §2.
+- Not done: CI pipeline (workflow files exist but aren't pushed — token scope gap) and error tracking (no Sentry DSN yet).
 
 ## [1.0.0] - 2026-07-29
 
