@@ -1,0 +1,15 @@
+<IfModule mod_authz_core.c>
+    <FilesMatch "^\.env|composer\.(json|lock)$|package(-lock)?\.json$|\.(sql|log)$">
+        Require all denied
+    </FilesMatch>
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Already routed into public/ on a previous pass - stop here to avoid a loop
+    RewriteCond %{REQUEST_URI} !^/public/
+
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>

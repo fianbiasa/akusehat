@@ -1,0 +1,730 @@
+// AI Personal Health Coach — DBML
+// Import at https://dbdiagram.io to render the visual ERD.
+// This mirrors mysql.sql exactly (57 tables). Keep both files in sync.
+
+Project ai_health_coach {
+  database_type: 'MySQL'
+  Note: 'AI Personal Health Coach — SaaS platform. See docs/02-ERD.md for grouped diagrams.'
+}
+
+// ---------------------------------------------------------------
+// MODULE 01 — CORE / AUTH / RBAC
+// ---------------------------------------------------------------
+Table roles {
+  id bigint [pk, increment]
+  name varchar [unique, note: 'admin | coach | member']
+  label varchar
+  description varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table permissions {
+  id bigint [pk, increment]
+  name varchar [unique]
+  module varchar
+  description varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table role_permissions {
+  role_id bigint [ref: > roles.id]
+  permission_id bigint [ref: > permissions.id]
+  Indexes { (role_id, permission_id) [pk] }
+}
+
+Table users {
+  id bigint [pk, increment]
+  role_id bigint [ref: > roles.id]
+  name varchar
+  email varchar [unique]
+  phone varchar
+  password varchar
+  avatar_path varchar
+  timezone varchar
+  locale varchar
+  status varchar [note: 'active|suspended|pending']
+  email_verified_at timestamp
+  onboarding_completed_at timestamp
+  last_login_at timestamp
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+// ---------------------------------------------------------------
+// MODULE 02 — AI PROVIDER LAYER
+// ---------------------------------------------------------------
+Table ai_providers {
+  id bigint [pk, increment]
+  name varchar
+  slug varchar [unique]
+  type varchar [note: 'cloud|local']
+  base_url varchar
+  driver_class varchar
+  is_active boolean
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ai_models {
+  id bigint [pk, increment]
+  provider_id bigint [ref: > ai_providers.id]
+  name varchar
+  model_key varchar
+  context_length int
+  supports_json_mode boolean
+  input_cost_per_1k decimal
+  output_cost_per_1k decimal
+  is_active boolean
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table user_ai_settings {
+  id bigint [pk, increment]
+  user_id bigint [ref: > users.id]
+  provider_id bigint [ref: > ai_providers.id]
+  model_id bigint [ref: > ai_models.id]
+  api_key_encrypted text
+  temperature decimal
+  is_default boolean
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ai_prompt_templates {
+  id bigint [pk, increment]
+  key varchar [unique]
+  purpose varchar
+  template text
+  variables json
+  response_schema json
+  version int
+  is_active boolean
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table rule_engine_rules {
+  id bigint [pk, increment]
+  category varchar
+  name varchar
+  condition json
+  action json
+  priority int
+  is_active boolean
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ai_memories {
+  id bigint [pk, increment]
+  user_id bigint [ref: > users.id]
+  user_program_id bigint [ref: > user_programs.id]
+  memory_type varchar [note: 'trend|pattern|milestone|concern']
+  summary varchar
+  data json
+  relevance_score decimal
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ai_recommendations {
+  id bigint [pk, increment]
+  user_id bigint [ref: > users.id]
+  user_program_id bigint [ref: > user_programs.id]
+  type varchar
+  content json
+  rationale text
+  status varchar
+  applied_at timestamp
+  reviewed_by bigint [ref: > users.id]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ai_request_logs {
+  id bigint [pk, increment]
+  user_id bigint [ref: > users.id]
+  provider_id bigint [ref: > ai_providers.id]
+  model_id bigint [ref: > ai_models.id]
+  purpose varchar
+  request_payload json
+  response_payload json
+  prompt_tokens int
+  completion_tokens int
+  estimated_cost decimal
+  latency_ms int
+  status varchar
+  error_message text
+  created_at timestamp
+}
+
+// ---------------------------------------------------------------
+// MODULE 03 — KNOWLEDGE BASE
+// ---------------------------------------------------------------
+Table kb_diseases {
+  id bigint [pk, increment]
+  name varchar
+  slug varchar [unique]
+  category varchar
+  description text
+  dietary_restrictions json
+  recommended_exercise json
+  contraindicated_exercise json
+  reference_source varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table kb_foods {
+  id bigint [pk, increment]
+  name varchar
+  name_local varchar
+  category varchar
+  serving_unit varchar
+  serving_size decimal
+  calories decimal
+  protein_g decimal
+  carbs_g decimal
+  fat_g decimal
+  fiber_g decimal
+  sodium_mg decimal
+  glycemic_index int
+  tags json
+  source varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table kb_exercises {
+  id bigint [pk, increment]
+  name varchar
+  category varchar
+  target_muscle varchar
+  met_value decimal
+  difficulty varchar
+  equipment varchar
+  instructions text
+  video_url varchar
+  contraindications json
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table kb_nutrition_articles {
+  id bigint [pk, increment]
+  title varchar
+  slug varchar [unique]
+  category varchar
+  content text
+  tags json
+  is_published boolean
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table kb_faqs {
+  id bigint [pk, increment]
+  question varchar
+  answer text
+  category varchar
+  order int
+  is_published boolean
+  created_at timestamp
+  updated_at timestamp
+}
+
+// ---------------------------------------------------------------
+// MODULE 04 — HEALTH PROFILE
+// ---------------------------------------------------------------
+Table health_profiles {
+  id bigint [pk, increment]
+  user_id bigint [ref: - users.id]
+  date_of_birth date
+  gender varchar
+  height_cm decimal
+  initial_weight_kg decimal
+  blood_type varchar
+  bmi decimal
+  bmr decimal
+  tdee decimal
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table lifestyle_profiles {
+  id bigint [pk, increment]
+  user_id bigint [ref: - users.id]
+  activity_level varchar
+  sleep_time time
+  wake_time time
+  avg_sleep_hours decimal
+  work_hours_per_day decimal
+  diet_pattern varchar
+  sugary_drinks_frequency varchar
+  smoking_status varchar
+  alcohol_frequency varchar
+  exercise_frequency varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table user_diseases {
+  id bigint [pk, increment]
+  user_id bigint [ref: > users.id]
+  kb_disease_id bigint [ref: > kb_diseases.id]
+  diagnosed_at date
+  status varchar
+  notes varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table user_allergies {
+  id bigint [pk, increment]
+  user_id bigint [ref: > users.id]
+  allergen varchar
+  severity varchar
+  notes varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table user_medications {
+  id bigint [pk, increment]
+  user_id bigint [ref: > users.id]
+  name varchar
+  dosage varchar
+  frequency varchar
+  started_at date
+  is_active boolean
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table body_measurements {
+  id bigint [pk, increment]
+  user_id bigint [ref: > users.id]
+  measured_at date
+  weight_kg decimal
+  waist_cm decimal
+  chest_cm decimal
+  hip_cm decimal
+  arm_cm decimal
+  thigh_cm decimal
+  body_fat_pct decimal
+  note varchar
+  created_at timestamp
+  updated_at timestamp
+  Indexes { (user_id, measured_at) [unique] }
+}
+
+// ---------------------------------------------------------------
+// MODULE 05 — ONBOARDING
+// ---------------------------------------------------------------
+Table onboarding_questions {
+  id bigint [pk, increment]
+  step int
+  category varchar
+  question_text varchar
+  input_type varchar
+  options json
+  validation_rules json
+  is_required boolean
+  order int
+  is_active boolean
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table onboarding_sessions {
+  id bigint [pk, increment]
+  user_id bigint [ref: > users.id]
+  status varchar
+  current_step int
+  started_at timestamp
+  completed_at timestamp
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table onboarding_answers {
+  id bigint [pk, increment]
+  onboarding_session_id bigint [ref: > onboarding_sessions.id]
+  question_id bigint [ref: > onboarding_questions.id]
+  answer_value json
+  answered_at timestamp
+  Indexes { (onboarding_session_id, question_id) [unique] }
+}
+
+// ---------------------------------------------------------------
+// MODULE 06 — PROGRAM
+// ---------------------------------------------------------------
+Table programs {
+  id bigint [pk, increment]
+  name varchar
+  slug varchar [unique]
+  category varchar
+  description text
+  default_duration_days int
+  is_active boolean
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table user_programs {
+  id bigint [pk, increment]
+  user_id bigint [ref: > users.id]
+  program_id bigint [ref: > programs.id]
+  coach_id bigint [ref: > users.id]
+  status varchar
+  start_date date
+  end_date date
+  created_by varchar [note: 'user|coach|ai']
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table program_goals {
+  id bigint [pk, increment]
+  user_program_id bigint [ref: > user_programs.id]
+  goal_type varchar
+  target_weight_kg decimal
+  target_waist_cm decimal
+  target_date date
+  notes varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table weekly_plans {
+  id bigint [pk, increment]
+  user_program_id bigint [ref: > user_programs.id]
+  week_number int
+  start_date date
+  end_date date
+  ai_summary text
+  ai_review json
+  generated_by varchar
+  created_at timestamp
+  updated_at timestamp
+  Indexes { (user_program_id, week_number) [unique] }
+}
+
+Table daily_tasks {
+  id bigint [pk, increment]
+  user_program_id bigint [ref: > user_programs.id]
+  task_date date
+  task_type varchar
+  title varchar
+  description varchar
+  is_completed boolean
+  completed_at timestamp
+  source varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table meal_plans {
+  id bigint [pk, increment]
+  user_program_id bigint [ref: > user_programs.id]
+  plan_date date
+  meal_type varchar
+  total_calories decimal
+  total_protein_g decimal
+  total_carbs_g decimal
+  total_fat_g decimal
+  is_completed boolean
+  source varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table meal_plan_items {
+  id bigint [pk, increment]
+  meal_plan_id bigint [ref: > meal_plans.id]
+  kb_food_id bigint [ref: > kb_foods.id]
+  custom_name varchar
+  portion decimal
+  calories decimal
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table workout_plans {
+  id bigint [pk, increment]
+  user_program_id bigint [ref: > user_programs.id]
+  plan_date date
+  workout_type varchar
+  duration_minutes int
+  intensity varchar
+  is_completed boolean
+  source varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table workout_plan_items {
+  id bigint [pk, increment]
+  workout_plan_id bigint [ref: > workout_plans.id]
+  kb_exercise_id bigint [ref: > kb_exercises.id]
+  custom_name varchar
+  sets int
+  reps int
+  duration_seconds int
+  order int
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table checklist_items {
+  id bigint [pk, increment]
+  user_program_id bigint [ref: > user_programs.id]
+  item_date date
+  label varchar
+  is_checked boolean
+  checked_at timestamp
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table reminders {
+  id bigint [pk, increment]
+  user_id bigint [ref: > users.id]
+  type varchar
+  title varchar
+  message varchar
+  scheduled_at time
+  is_recurring boolean
+  recurrence_rule varchar
+  is_active boolean
+  last_sent_at timestamp
+  created_at timestamp
+  updated_at timestamp
+}
+
+// ---------------------------------------------------------------
+// MODULE 07 — PROGRESS TRACKING
+// ---------------------------------------------------------------
+Table weight_logs {
+  id bigint [pk, increment]
+  user_id bigint [ref: > users.id]
+  logged_at date
+  weight_kg decimal
+  note varchar
+  created_at timestamp
+  Indexes { (user_id, logged_at) [unique] }
+}
+
+Table waist_logs {
+  id bigint [pk, increment]
+  user_id bigint [ref: > users.id]
+  logged_at date
+  waist_cm decimal
+  created_at timestamp
+  Indexes { (user_id, logged_at) [unique] }
+}
+
+Table body_fat_logs {
+  id bigint [pk, increment]
+  user_id bigint [ref: > users.id]
+  logged_at date
+  body_fat_pct decimal
+  created_at timestamp
+  Indexes { (user_id, logged_at) [unique] }
+}
+
+Table progress_photos {
+  id bigint [pk, increment]
+  user_id bigint [ref: > users.id]
+  logged_at date
+  angle varchar
+  photo_path varchar
+  is_private boolean
+  created_at timestamp
+}
+
+Table water_intake_logs {
+  id bigint [pk, increment]
+  user_id bigint [ref: > users.id]
+  logged_at date
+  amount_ml int
+  created_at timestamp
+}
+
+Table sleep_logs {
+  id bigint [pk, increment]
+  user_id bigint [ref: > users.id]
+  logged_at date
+  sleep_hours decimal
+  quality varchar
+  created_at timestamp
+  Indexes { (user_id, logged_at) [unique] }
+}
+
+Table health_scores {
+  id bigint [pk, increment]
+  user_id bigint [ref: > users.id]
+  scored_at date
+  score decimal
+  breakdown json
+  explanation text
+  created_at timestamp
+  Indexes { (user_id, scored_at) [unique] }
+}
+
+// ---------------------------------------------------------------
+// MODULE 08 — COACH
+// ---------------------------------------------------------------
+Table coach_profiles {
+  id bigint [pk, increment]
+  user_id bigint [ref: - users.id]
+  bio text
+  specialization varchar
+  certification varchar
+  max_members int
+  rating_avg decimal
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table coach_members {
+  id bigint [pk, increment]
+  coach_id bigint [ref: > users.id]
+  member_id bigint [ref: > users.id]
+  status varchar
+  assigned_at timestamp
+  ended_at timestamp
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table coach_notes {
+  id bigint [pk, increment]
+  coach_id bigint [ref: > users.id]
+  member_id bigint [ref: > users.id]
+  note text
+  is_visible_to_member boolean
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table conversations {
+  id bigint [pk, increment]
+  type varchar [note: 'coach_member|ai_assistant']
+  user_id bigint [ref: > users.id]
+  coach_id bigint [ref: > users.id]
+  last_message_at timestamp
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table messages {
+  id bigint [pk, increment]
+  conversation_id bigint [ref: > conversations.id]
+  sender_type varchar [note: 'user|coach|ai|system']
+  sender_id bigint
+  content text
+  meta json
+  read_at timestamp
+  created_at timestamp
+}
+
+Table reviews {
+  id bigint [pk, increment]
+  coach_id bigint [ref: > users.id]
+  member_id bigint [ref: > users.id]
+  rating int
+  comment varchar
+  created_at timestamp
+  updated_at timestamp
+  Indexes { (coach_id, member_id) [unique] }
+}
+
+// ---------------------------------------------------------------
+// MODULE 09 — ANALYTICS / GAMIFICATION
+// ---------------------------------------------------------------
+Table achievements {
+  id bigint [pk, increment]
+  name varchar
+  description varchar
+  icon varchar
+  criteria json
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table user_achievements {
+  id bigint [pk, increment]
+  user_id bigint [ref: > users.id]
+  achievement_id bigint [ref: > achievements.id]
+  earned_at timestamp
+  Indexes { (user_id, achievement_id) [unique] }
+}
+
+Table activity_logs {
+  id bigint [pk, increment]
+  user_id bigint [ref: > users.id]
+  action varchar
+  subject_type varchar
+  subject_id bigint
+  meta json
+  ip_address varchar
+  created_at timestamp
+}
+
+// ---------------------------------------------------------------
+// MODULE 10 — SUBSCRIPTION / BILLING
+// ---------------------------------------------------------------
+Table plans {
+  id bigint [pk, increment]
+  name varchar
+  slug varchar [unique]
+  price decimal
+  billing_cycle varchar
+  features json
+  max_programs int
+  has_coach_access boolean
+  is_active boolean
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table subscriptions {
+  id bigint [pk, increment]
+  user_id bigint [ref: > users.id]
+  plan_id bigint [ref: > plans.id]
+  status varchar
+  starts_at timestamp
+  ends_at timestamp
+  cancelled_at timestamp
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table payments {
+  id bigint [pk, increment]
+  subscription_id bigint [ref: > subscriptions.id]
+  provider varchar
+  provider_reference varchar
+  amount decimal
+  currency varchar
+  status varchar
+  paid_at timestamp
+  created_at timestamp
+  updated_at timestamp
+}
+
+// ---------------------------------------------------------------
+// MODULE 11 — APP SETTINGS
+// ---------------------------------------------------------------
+Table app_settings {
+  id bigint [pk, increment]
+  key varchar [unique]
+  value json
+  description varchar
+  updated_at timestamp
+}
