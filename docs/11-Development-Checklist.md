@@ -52,14 +52,14 @@
 
 ## Phase 3 — Health Profile
 
-- [ ] Migrations: `health_profiles`, `lifestyle_profiles`, `user_diseases`, `user_allergies`, `user_medications`, `body_measurements`
-- [ ] Models + relationships
-- [ ] `HealthProfileService`: BMI/BMR/TDEE calculation (formulas in [08-Knowledge-Base.md](08-Knowledge-Base.md) §4)
-- [ ] Listener: recalculate BMI/BMR/TDEE on new `weight_logs` entry or `lifestyle_profiles.activity_level` change
-- [ ] Onboarding → Health Profile mapping (answers populate these tables on completion)
-- [ ] API: profile/lifestyle/diseases/allergies/medications/measurements endpoints (§5 of [05-API-Specification.md](05-API-Specification.md))
-- [ ] React: Profile edit screens ([wireframe/settings.md](../wireframe/settings.md) "Profil" tab)
-- [ ] Unit tests: BMI/BMR/TDEE formula correctness against known reference values
+- [x] Migrations: `health_profiles`, `lifestyle_profiles`, `user_diseases`, `user_allergies`, `user_medications`, `body_measurements` — plus `kb_diseases` pulled forward from Phase 4 (required FK, minimal 5-row seed only; kb_foods/kb_exercises/kb_nutrition_articles/kb_faqs and their Admin CRUD stay in Phase 4)
+- [x] Models + relationships
+- [x] `HealthProfileService`: BMI/BMR/TDEE calculation (formulas in [08-Knowledge-Base.md](08-Knowledge-Base.md) §4)
+- [x] Listener: recalculate BMI/BMR/TDEE — implemented as `BodyMeasurementObserver` (on create) and `LifestyleProfileObserver` (on `activity_level` change), since `weight_logs` doesn't exist yet (Phase 7); `body_measurements` (Phase 3-scoped) is the interim trigger
+- [x] Onboarding → Health Profile mapping (`MapOnboardingAnswersToHealthProfile` listener, matched by `onboarding_questions.step` — coupled to `OnboardingQuestionSeeder`, documented inline)
+- [x] API: profile/lifestyle/diseases/allergies/medications/measurements endpoints (§5 of [05-API-Specification.md](05-API-Specification.md)) — Member (own) scope only; Coach/Admin read access deferred to Phase 8 (`coach_members` doesn't exist yet)
+- [x] React: Profile edit screens ([wireframe/settings.md](../wireframe/settings.md) "Profil" tab) — `/profile/health`, linked from Settings as "Kesehatan"
+- [x] Unit tests: BMI/BMR/TDEE formula correctness against known reference values (verified against the worked example in [07-Prompt-Engineering.md](07-Prompt-Engineering.md) §4)
 
 ## Phase 4 — Knowledge Base & Rule Engine
 

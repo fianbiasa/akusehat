@@ -10,6 +10,11 @@ use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 
 return Application::configure(basePath: dirname(__DIR__))
+    // Listener registration is explicit in AppServiceProvider (ordering
+    // matters - e.g. health-profile mapping must run before program
+    // generation is dispatched). Auto-discovery would double-register
+    // every listener on top of that.
+    ->withEvents(discover: false)
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
         api: __DIR__.'/../routes/api.php',

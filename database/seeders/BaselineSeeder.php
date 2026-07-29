@@ -13,6 +13,7 @@ class BaselineSeeder extends Seeder
     public function run(): void
     {
         $this->call(RolePermissionSeeder::class);
+        $this->call(KbDiseaseSeeder::class);
         $this->call(OnboardingQuestionSeeder::class);
     }
 }

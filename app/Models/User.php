@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -77,5 +78,35 @@ class User extends Authenticatable implements MustVerifyEmail
     public function onboardingSessions(): HasMany
     {
         return $this->hasMany(OnboardingSession::class);
+    }
+
+    public function healthProfile(): HasOne
+    {
+        return $this->hasOne(HealthProfile::class);
+    }
+
+    public function lifestyleProfile(): HasOne
+    {
+        return $this->hasOne(LifestyleProfile::class);
+    }
+
+    public function diseases(): HasMany
+    {
+        return $this->hasMany(UserDisease::class);
+    }
+
+    public function allergies(): HasMany
+    {
+        return $this->hasMany(UserAllergy::class);
+    }
+
+    public function medications(): HasMany
+    {
+        return $this->hasMany(UserMedication::class);
+    }
+
+    public function bodyMeasurements(): HasMany
+    {
+        return $this->hasMany(BodyMeasurement::class);
     }
 }

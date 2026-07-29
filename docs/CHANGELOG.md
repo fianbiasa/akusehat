@@ -4,6 +4,16 @@ All notable changes to this specification/documentation set are recorded here. T
 
 ## [Unreleased] - Application build progress
 
+### Phase 3 — Health Profile (2026-07-29)
+- Migrations/models for `health_profiles`, `lifestyle_profiles`, `user_diseases`, `user_allergies`, `user_medications`, `body_measurements`, plus `kb_diseases` pulled forward from Phase 4 (only that one KB table + a 5-row seed, since `user_diseases.kb_disease_id` is a required FK — kb_foods/kb_exercises/kb_nutrition_articles/kb_faqs and their Admin CRUD stay in Phase 4).
+- `HealthProfileService`: BMI/BMR (Mifflin-St Jeor)/TDEE, verified against the worked example in docs/07-Prompt-Engineering.md §4 (age 39/167cm/77.5kg → BMI 27.79, BMR 1628.75, TDEE 2239.53 at "light" activity).
+- Weight source precedence: most recent `body_measurements` row over `health_profiles.initial_weight_kg` (the onboarding-time baseline) — `weight_logs` (Phase 7) will become the primary trigger once it exists.
+- `BodyMeasurementObserver`/`LifestyleProfileObserver` recalculate BMI/BMR/TDEE automatically on a new measurement or an `activity_level` change.
+- `MapOnboardingAnswersToHealthProfile` listener populates all six tables from the 55 onboarding answers, matched by `onboarding_questions.step` (coupled to `OnboardingQuestionSeeder` — documented inline since the mapping breaks silently if the two drift apart).
+- Settings → "Kesehatan" page (`/profile/health`): editable health/lifestyle fields, disease/allergy/medication add-remove, and a measurement log — all Member-own-data only; Coach/Admin read access is deferred to Phase 8 (`coach_members` doesn't exist yet).
+- Two real bugs caught by live HTTP smoke testing (not the in-process test suite): (1) Laravel 12's `Application::configure()` auto-discovers `app/Listeners` by convention, which was silently double-registering every explicitly-`Event::listen()`'d listener (2 listeners → 4 registered) and caused a duplicate-insert crash under concurrent-looking execution — fixed with `->withEvents(discover: false)` in `bootstrap/app.php` so registration order in `AppServiceProvider` is the only source of truth. (2) `date`-cast fields (`date_of_birth`, `measured_at`, etc.) serialize to JSON as full UTC-shifted ISO8601 timestamps by default, which silently breaks `<input type="date">` and can shift the date by a day relative to `APP_TIMEZONE` — fixed with the `date:Y-m-d` cast format across every date-only column.
+- 68/68 tests passing (added BMI/BMR/TDEE unit tests, onboarding-mapping feature tests, and profile API CRUD feature tests).
+
 ### Phase 2 — Onboarding (2026-07-29)
 - Migrations + models for `onboarding_questions`/`onboarding_sessions`/`onboarding_answers`, matching the Database Dictionary (note: `onboarding_answers` has no `created_at`/`updated_at`, only `answered_at` — `OnboardingAnswer::$timestamps = false`).
 - 55 seeded questions across identity/body/lifestyle/medical/preferences/goal (wireframe/onboarding.md only sketches step ranges, not literal text — authored here). Medications/allergies use a `validation_rules.repeatable` flag consumed by a generic repeatable-row React component, rather than a one-off special case.

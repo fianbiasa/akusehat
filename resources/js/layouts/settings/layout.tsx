@@ -12,6 +12,11 @@ const sidebarNavItems: NavItem[] = [
         icon: null,
     },
     {
+        title: 'Kesehatan',
+        url: '/profile/health',
+        icon: null,
+    },
+    {
         title: 'Password',
         url: '/settings/password',
         icon: null,

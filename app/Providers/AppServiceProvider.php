@@ -4,6 +4,11 @@ namespace App\Providers;
 
 use App\Events\OnboardingCompleted;
 use App\Listeners\DispatchInitialProgramGeneration;
+use App\Listeners\MapOnboardingAnswersToHealthProfile;
+use App\Models\BodyMeasurement;
+use App\Models\LifestyleProfile;
+use App\Observers\BodyMeasurementObserver;
+use App\Observers\LifestyleProfileObserver;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -30,6 +35,12 @@ class AppServiceProvider extends ServiceProvider
         // affects bare $table->string() columns.
         Schema::defaultStringLength(191);
 
+        // Health-profile mapping must run before program generation is
+        // dispatched, since the (future) Rule Engine will read from it.
+        Event::listen(OnboardingCompleted::class, MapOnboardingAnswersToHealthProfile::class);
         Event::listen(OnboardingCompleted::class, DispatchInitialProgramGeneration::class);
+
+        BodyMeasurement::observe(BodyMeasurementObserver::class);
+        LifestyleProfile::observe(LifestyleProfileObserver::class);
     }
 }
