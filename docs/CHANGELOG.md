@@ -4,6 +4,16 @@ All notable changes to this specification/documentation set are recorded here. T
 
 ## [Unreleased] - Application build progress
 
+### Phase 4 — Knowledge Base & Rule Engine (2026-07-29)
+- Migrations/models for `kb_foods`, `kb_exercises`, `kb_nutrition_articles`, `kb_faqs`, `rule_engine_rules` (`kb_diseases` was already done in Phase 3).
+- Starter/demo KB content — 40 foods, 28 exercises, 3 articles, 3 FAQs — explicitly **not** the full ~300–500-row SME/TKPI-sourced catalog docs/08-Knowledge-Base.md §7 calls for; per PRD §6.3, full content curation is a product-owner/SME task, not something to fabricate wholesale. Every seeded food's `source` field flags it as pending review.
+- `RuleEngineConditionEvaluator`: a constrained DSL interpreter (`>=`,`<=`,`>`,`<`,`==`,`in`,`and`,`or`,`not`), never `eval()`'d, per 04-Architecture.md §8. A missing/null context field never matches (fails closed, not open).
+- `RuleEngineService::evaluate(User): array` — the fixed 5-key output contract from 08-Knowledge-Base.md §3.3. Within a category, same-key conflicts resolve by priority (higher wins); `disease_restriction` is the one category that **unions** instead — two conditions mean two sets of restrictions apply, not just the higher-priority one's.
+- Seeded 11 baseline rules across all 5 categories, including the doc's 3 worked examples verbatim. Full pipeline verified against realistic profiles both in unit tests and live: a 33.2-BMI diabetic sedentary user correctly gets a 25%-deficit calorie target (obese threshold overriding the plain overweight rule), a diabetes-adjusted macro split, `beginner` workout level, and a `low_glycemic_index` restriction — matching manual calculation exactly.
+- Read-only KB search endpoints (`GET /kb/foods|exercises|diseases|articles|faqs`, `?q=&category=&tags[]=`). Admin CRUD for editing this content is deferred (only Rule Engine has an Admin UI so far).
+- Admin Rule Engine CRUD + "Uji Coba" — dry-runs a rule's condition against a hand-entered sample profile without touching a real user, showing whether it matches and what action would apply.
+- 110/110 tests passing, including a full worked-example integration test matching 08-Knowledge-Base.md §3.3's documented output shape exactly.
+
 ### Phase 3 — Health Profile (2026-07-29)
 - Migrations/models for `health_profiles`, `lifestyle_profiles`, `user_diseases`, `user_allergies`, `user_medications`, `body_measurements`, plus `kb_diseases` pulled forward from Phase 4 (only that one KB table + a 5-row seed, since `user_diseases.kb_disease_id` is a required FK — kb_foods/kb_exercises/kb_nutrition_articles/kb_faqs and their Admin CRUD stay in Phase 4).
 - `HealthProfileService`: BMI/BMR (Mifflin-St Jeor)/TDEE, verified against the worked example in docs/07-Prompt-Engineering.md §4 (age 39/167cm/77.5kg → BMI 27.79, BMR 1628.75, TDEE 2239.53 at "light" activity).

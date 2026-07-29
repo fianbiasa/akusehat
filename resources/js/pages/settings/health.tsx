@@ -120,12 +120,7 @@ function HealthProfileForm({ profile }: { profile: HealthProfile }) {
             <form onSubmit={submit} className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
                     <Label htmlFor="date_of_birth">Tanggal Lahir</Label>
-                    <Input
-                        id="date_of_birth"
-                        type="date"
-                        value={data.date_of_birth}
-                        onChange={(e) => setData('date_of_birth', e.target.value)}
-                    />
+                    <Input id="date_of_birth" type="date" value={data.date_of_birth} onChange={(e) => setData('date_of_birth', e.target.value)} />
                     <InputError message={errors.date_of_birth} />
                 </div>
                 <div className="grid gap-2">

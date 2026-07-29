@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\RuleEngineController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,5 +16,13 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::middleware('permission:roles.manage')->group(function () {
         Route::get('roles', [RoleController::class, 'index'])->name('roles.index');
         Route::patch('roles/{role}/permissions', [RoleController::class, 'updatePermissions'])->name('roles.permissions.update');
+    });
+
+    Route::middleware('permission:rule_engine.manage')->prefix('rule-engine')->name('rule-engine.')->group(function () {
+        Route::get('rules', [RuleEngineController::class, 'index'])->name('rules.index');
+        Route::post('rules', [RuleEngineController::class, 'store'])->name('rules.store');
+        Route::patch('rules/{rule}', [RuleEngineController::class, 'update'])->name('rules.update');
+        Route::delete('rules/{rule}', [RuleEngineController::class, 'destroy'])->name('rules.destroy');
+        Route::post('rules/{rule}/test', [RuleEngineController::class, 'test'])->name('rules.test');
     });
 });

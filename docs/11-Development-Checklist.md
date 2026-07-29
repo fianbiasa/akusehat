@@ -63,18 +63,18 @@
 
 ## Phase 4 — Knowledge Base & Rule Engine
 
-- [ ] Migrations: `kb_diseases`, `kb_foods`, `kb_exercises`, `kb_nutrition_articles`, `kb_faqs`, `rule_engine_rules`
-- [ ] Seed: initial disease set (diabetes, hipertensi, kolesterol, asam urat, tukak lambung/GERD)
-- [ ] Seed: initial food set (~300–500 Indonesian foods, SME-sourced per [08-Knowledge-Base.md](08-Knowledge-Base.md) §7)
-- [ ] Seed: initial exercise set (~100–150 exercises)
-- [ ] Seed: baseline rule set (calorie target, macro split, workout level, water target, disease restrictions)
-- [ ] `RuleEngineConditionEvaluator`: implement condition DSL (`>=`,`<=`,`>`,`<`,`==`,`in`,`and`,`or`,`not`)
-- [ ] `RuleEngineService::evaluate(User $user): array` — priority-based conflict resolution across categories
-- [ ] Admin: Rule Engine CRUD + "Uji Coba" (test-against-sample-profile) endpoint/UI
-- [ ] Admin: Knowledge Base CRUD (foods/exercises/diseases/articles/FAQ) + React pages
-- [ ] KB search endpoints (`?q=&category=&tags[]=`)
-- [ ] Unit tests: rule evaluator against each example rule in [08-Knowledge-Base.md](08-Knowledge-Base.md) §3
-- [ ] Unit tests: conflict resolution (two rules same category, priority wins)
+- [x] Migrations: `kb_diseases` (done in Phase 3, pulled forward for `user_diseases`' FK), `kb_foods`, `kb_exercises`, `kb_nutrition_articles`, `kb_faqs`, `rule_engine_rules`
+- [x] Seed: initial disease set (diabetes, hipertensi, kolesterol, asam urat, tukak lambung/GERD) — done in Phase 3
+- [x] Seed: initial food set — **40 rows, a starter/demo set, not the ~300–500 SME/TKPI-sourced catalog** §7 calls for. Per PRD §6.3 that full curation is an explicit product-owner/SME task, not something to fabricate wholesale; `kb_foods.source` flags every seeded row as pending review.
+- [x] Seed: initial exercise set — 28 rows, same starter/demo caveat as foods.
+- [x] Seed: baseline rule set (calorie target, macro split, workout level, water target, disease restrictions) — 11 rules covering all 5 categories, including the 3 worked examples from [08-Knowledge-Base.md](08-Knowledge-Base.md) §3.1 verbatim
+- [x] `RuleEngineConditionEvaluator`: implement condition DSL (`>=`,`<=`,`>`,`<`,`==`,`in`,`and`,`or`,`not`)
+- [x] `RuleEngineService::evaluate(User $user): array` — priority-based conflict resolution across categories; `disease_restriction` accumulates (union) rather than overwrites, since a user can have multiple conditions at once
+- [x] Admin: Rule Engine CRUD + "Uji Coba" (test-against-sample-profile) endpoint/UI
+- [ ] Admin: Knowledge Base CRUD (foods/exercises/diseases/articles/FAQ) + React pages — deferred; read-only search exists, editing UI does not yet
+- [x] KB search endpoints (`?q=&category=&tags[]=`)
+- [x] Unit tests: rule evaluator against each example rule in [08-Knowledge-Base.md](08-Knowledge-Base.md) §3
+- [x] Unit tests: conflict resolution (two rules same category, priority wins)
 
 ## Phase 5 — AI Provider Layer
 

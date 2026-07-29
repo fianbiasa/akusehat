@@ -14,6 +14,11 @@ class BaselineSeeder extends Seeder
     {
         $this->call(RolePermissionSeeder::class);
         $this->call(KbDiseaseSeeder::class);
+        $this->call(KbFoodSeeder::class);
+        $this->call(KbExerciseSeeder::class);
+        $this->call(KbNutritionArticleSeeder::class);
+        $this->call(KbFaqSeeder::class);
+        $this->call(RuleEngineRuleSeeder::class);
         $this->call(OnboardingQuestionSeeder::class);
     }
 }
