@@ -11,6 +11,7 @@ use App\Models\Reminder;
 use App\Models\User;
 use App\Models\UserProgram;
 use App\Models\WeeklyPlan;
+use App\Services\Admin\ActivityLogger;
 use App\Services\AI\AIGatewayService;
 use App\Services\RuleEngine\RuleEngineService;
 use Carbon\Carbon;
@@ -33,6 +34,7 @@ class ProgramGenerationService
     public function __construct(
         private RuleEngineService $ruleEngineService,
         private AIGatewayService $aiGateway,
+        private ActivityLogger $activityLogger,
     ) {}
 
     /**
@@ -62,6 +64,8 @@ class ProgramGenerationService
 
             $this->createGoal($user, $userProgram, $startDate, $value(9), $value(10), $value(54));
             $this->createReminders($user, $value(45), $value(46), $value(47), $value(48));
+
+            $this->activityLogger->log('program.created', $userProgram, ['program_id' => $program->id]);
 
             return $userProgram;
         });

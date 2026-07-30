@@ -11,6 +11,7 @@ import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
+import { Calendar, Flame, LucideIcon, Trophy, TrendingDown } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [{ title: 'Kesehatan', href: '/profile/health' }];
@@ -43,6 +44,7 @@ type Allergy = { id: number; allergen: string; severity: string };
 type Medication = { id: number; name: string; dosage: string | null; frequency: string | null };
 type Measurement = { id: number; measured_at: string; weight_kg: number | null; waist_cm: number | null };
 type KbDisease = { id: number; name: string };
+type AchievementBadge = { id: number; name: string; description: string | null; icon: string | null; earned_at: string | null };
 
 export default function HealthSettings({
     healthProfile,
@@ -52,6 +54,7 @@ export default function HealthSettings({
     medications,
     measurements,
     kbDiseases,
+    achievements,
 }: {
     healthProfile: HealthProfile;
     lifestyleProfile: LifestyleProfile;
@@ -60,6 +63,7 @@ export default function HealthSettings({
     medications: Medication[];
     measurements: Measurement[];
     kbDiseases: KbDisease[];
+    achievements: AchievementBadge[];
 }) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -73,9 +77,46 @@ export default function HealthSettings({
                     <AllergiesSection allergies={allergies} />
                     <MedicationsSection medications={medications} />
                     <MeasurementsSection measurements={measurements} />
+                    <AchievementsSection achievements={achievements} />
                 </div>
             </SettingsLayout>
         </AppLayout>
+    );
+}
+
+const ACHIEVEMENT_ICONS: Record<string, LucideIcon> = {
+    Trophy,
+    Flame,
+    Calendar,
+    TrendingDown,
+};
+
+function AchievementsSection({ achievements }: { achievements: AchievementBadge[] }) {
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle className="text-base">Pencapaian</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                    {achievements.map((achievement) => {
+                        const Icon = (achievement.icon && ACHIEVEMENT_ICONS[achievement.icon]) || Trophy;
+                        const earned = achievement.earned_at !== null;
+
+                        return (
+                            <div
+                                key={achievement.id}
+                                className={`flex flex-col items-center gap-2 rounded-lg border p-4 text-center ${earned ? '' : 'opacity-40 grayscale'}`}
+                            >
+                                <Icon className={`h-8 w-8 ${earned ? 'text-primary' : 'text-muted-foreground'}`} />
+                                <p className="text-sm font-medium">{achievement.name}</p>
+                                <p className="text-muted-foreground text-xs">{achievement.description}</p>
+                            </div>
+                        );
+                    })}
+                </div>
+            </CardContent>
+        </Card>
     );
 }
 

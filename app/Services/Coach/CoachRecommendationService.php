@@ -5,6 +5,7 @@ namespace App\Services\Coach;
 use App\Models\AiRecommendation;
 use App\Models\User;
 use App\Notifications\RecommendationReviewed;
+use App\Services\Admin\ActivityLogger;
 
 /**
  * Coach approve/reject of a *pending* ai_recommendation
@@ -17,6 +18,8 @@ use App\Notifications\RecommendationReviewed;
  */
 class CoachRecommendationService
 {
+    public function __construct(private ActivityLogger $activityLogger) {}
+
     public function approve(AiRecommendation $recommendation, User $coach): AiRecommendation
     {
         $recommendation->update([
@@ -27,6 +30,7 @@ class CoachRecommendationService
 
         $recommendation = $recommendation->fresh();
         $recommendation->user->notify(new RecommendationReviewed($recommendation));
+        $this->activityLogger->log('recommendation.approved', $recommendation, ['type' => $recommendation->type]);
 
         return $recommendation;
     }
@@ -41,6 +45,7 @@ class CoachRecommendationService
 
         $recommendation = $recommendation->fresh();
         $recommendation->user->notify(new RecommendationReviewed($recommendation));
+        $this->activityLogger->log('recommendation.rejected', $recommendation, ['type' => $recommendation->type, 'reason' => $reason]);
 
         return $recommendation;
     }

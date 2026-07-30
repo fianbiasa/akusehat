@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AchievementController;
 use App\Http\Controllers\Profile\BodyMeasurementController;
 use App\Http\Controllers\Profile\HealthProfileController;
 use App\Http\Controllers\Profile\LifestyleProfileController;
@@ -24,4 +25,6 @@ Route::middleware(['auth', 'onboarding.completed'])->prefix('profile')->name('pr
     Route::delete('medications/{medication}', [UserMedicationController::class, 'destroy'])->name('medications.destroy');
 
     Route::post('measurements', [BodyMeasurementController::class, 'store'])->name('measurements.store');
+
+    Route::get('achievements', [AchievementController::class, 'mine'])->name('achievements.mine');
 });

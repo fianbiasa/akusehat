@@ -23,5 +23,6 @@ class BaselineSeeder extends Seeder
         $this->call(AiPromptTemplateSeeder::class);
         $this->call(OnboardingQuestionSeeder::class);
         $this->call(ProgramSeeder::class);
+        $this->call(AchievementSeeder::class);
     }
 }

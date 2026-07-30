@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Programs\Concerns\AuthorizesProgramAccess;
 use App\Models\MealPlan;
 use App\Models\UserProgram;
+use App\Services\Admin\ActivityLogger;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,6 +14,8 @@ use Illuminate\Http\Request;
 class MealPlanController extends Controller
 {
     use AuthorizesProgramAccess;
+
+    public function __construct(private ActivityLogger $activityLogger) {}
 
     public function index(Request $request, UserProgram $userProgram): JsonResponse
     {
@@ -41,6 +44,7 @@ class MealPlanController extends Controller
 
         if (isset($validated['total_calories'])) {
             $validated['source'] = 'manual';
+            $this->activityLogger->log('meal_plan.overridden', $mealPlan, ['total_calories' => $validated['total_calories']]);
         }
 
         $mealPlan->update($validated);

@@ -162,12 +162,14 @@
 
 ## Phase 10 — Achievements & Notifications
 
-- [ ] Migrations: `achievements`, `user_achievements` — `activity_logs` already created in Phase 9 (pulled forward for the Admin audit log viewer)
-- [ ] `EvaluateAchievementsJob` (daily scheduled, criteria matching against logs)
-- [ ] API: achievements catalog + earned achievements
-- [ ] React: achievement badges on Dashboard/Profile
-- [ ] `activity_logs` write-through in remaining member/coach-facing services (program creation, plan override, recommendation approval) — the Admin-side write-through (users, roles, coach assignment, AI provider, rule engine) is already done in Phase 9
-- [ ] Laravel Notification channels: in-app + email (push deferred to v1.1)
+- [x] Migrations: `achievements`, `user_achievements` — `activity_logs` already created in Phase 9 (pulled forward for the Admin audit log viewer)
+- [x] `EvaluateAchievementsJob` (daily scheduled, criteria matching against logs) — `AchievementCriteriaEvaluator` supports 3 documented criteria types (the Database Dictionary only sketches two example JSON shapes, no formal schema): `weight_loss_kg` (vs. earliest weight log), `checklist_streak_days` (N consecutive fully-checked days), `program_milestone_days` (program age). 6 baseline achievements seeded via `AchievementSeeder`, covering both PRD-named categories ("streaks, milestones").
+- [x] API: achievements catalog + earned achievements — `GET /achievements` (catalog, any authenticated user) and `GET /profile/achievements` (earned, M(own)/C(assigned)/A — reuses the Progress module's `ResolvesTargetUser` pattern).
+- [x] React: achievement badges on Dashboard/Profile — Dashboard shows the 3 most recent earned badges; the health Profile page (`/profile/health`, this app's actual "health profile" screen) shows the full catalog as a locked/unlocked badge grid.
+- [x] `activity_logs` write-through in remaining member/coach-facing services (program creation, plan override, recommendation approval) — `ProgramGenerationService::bootstrap()` logs `program.created`; `MealPlanController`/`WorkoutPlanController::update()` log `meal_plan.overridden`/`workout_plan.overridden` **only** when an actual manual override happens (total_calories/duration_minutes set), not on routine `is_completed` checklist-style toggles, per `ActivityLogger`'s own "audit-worthy, not routine noise" design; `CoachRecommendationService::approve()`/`reject()` log `recommendation.approved`/`recommendation.rejected`. Admin-side write-through (users, roles, coach assignment, AI provider, rule engine) was already done in Phase 9.
+- [x] Laravel Notification channels: in-app + email (push deferred to v1.1) — added `mail` (queued, `ShouldQueue`) alongside `database` for one-time/significant events: `ProgramReady`, `RecommendationReviewed`, and the new `AchievementEarned`. `ReminderDue` stays database-only per its existing Phase 6 reasoning (per-occurrence cadence, would spam).
+- Bug found and fixed via live smoke testing (unrelated to this phase's own new code, but discovered while creating smoke-test accounts): `Admin\UserController::store()` set `email_verified_at` via a plain `User::create()` array, but that column is deliberately excluded from `$fillable` (see `OnboardingController`'s existing `forceFill()` precedent for `onboarding_completed_at`) — so it was being silently dropped on every Admin-created account. No functional impact today (no route uses the `verified` middleware), but the code's own intent was broken. Fixed with the same `forceFill()` pattern already established elsewhere in the codebase, with a regression test.
+- 316/316 tests passing.
 
 ## Phase 11 — Subscription Scaffolding (schema + gating, no live gateway in v1)
 

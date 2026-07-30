@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Profile;
 
 use App\Http\Controllers\Controller;
+use App\Models\Achievement;
 use App\Models\KbDisease;
 use App\Services\HealthProfileService;
 use Illuminate\Http\RedirectResponse;
@@ -16,6 +17,7 @@ class HealthProfileController extends Controller
     public function edit(Request $request): Response
     {
         $user = $request->user();
+        $earnedMap = $user->userAchievements()->pluck('earned_at', 'achievement_id');
 
         return Inertia::render('settings/health', [
             'healthProfile' => $user->healthProfile,
@@ -25,6 +27,13 @@ class HealthProfileController extends Controller
             'medications' => $user->medications()->get(),
             'measurements' => $user->bodyMeasurements()->orderByDesc('measured_at')->limit(10)->get(),
             'kbDiseases' => KbDisease::orderBy('name')->get(['id', 'name']),
+            'achievements' => Achievement::orderBy('name')->get()->map(fn ($achievement) => [
+                'id' => $achievement->id,
+                'name' => $achievement->name,
+                'description' => $achievement->description,
+                'icon' => $achievement->icon,
+                'earned_at' => $earnedMap->get($achievement->id),
+            ]),
         ]);
     }
 

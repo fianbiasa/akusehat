@@ -5,6 +5,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
+import { Calendar, Flame, LucideIcon, Trophy, TrendingDown } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [{ title: 'Dashboard', href: '/dashboard' }];
 
@@ -37,6 +38,15 @@ type HealthScore = {
     delta: number | null;
 };
 
+type AchievementBadge = { id: number; name: string; icon: string | null };
+
+const ACHIEVEMENT_ICONS: Record<string, LucideIcon> = {
+    Trophy,
+    Flame,
+    Calendar,
+    TrendingDown,
+};
+
 export default function Dashboard({
     selectedProgramId,
     activePrograms,
@@ -44,6 +54,7 @@ export default function Dashboard({
     latestMeasurement,
     healthScore,
     weeklyReview,
+    recentAchievements,
 }: {
     selectedProgramId: number | null;
     activePrograms: ActiveProgram[];
@@ -51,6 +62,7 @@ export default function Dashboard({
     latestMeasurement: { weight_kg: number; measured_at: string } | null;
     healthScore: HealthScore | null;
     weeklyReview: WeeklyReview | null;
+    recentAchievements: AchievementBadge[];
 }) {
     const primaryProgram = activePrograms.find((p) => p.id === selectedProgramId) ?? activePrograms[0];
 
@@ -189,6 +201,29 @@ export default function Dashboard({
                                     Lihat Detail
                                 </Link>
                             </Button>
+                        </CardContent>
+                    </Card>
+                )}
+
+                {recentAchievements.length > 0 && (
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between">
+                            <CardTitle>Pencapaian Terbaru</CardTitle>
+                            <Button asChild size="sm" variant="outline">
+                                <Link href="/profile/health">Lihat Semua</Link>
+                            </Button>
+                        </CardHeader>
+                        <CardContent className="flex gap-4">
+                            {recentAchievements.map((achievement) => {
+                                const Icon = (achievement.icon && ACHIEVEMENT_ICONS[achievement.icon]) || Trophy;
+
+                                return (
+                                    <div key={achievement.id} className="flex flex-col items-center gap-1 text-center">
+                                        <Icon className="text-primary h-8 w-8" />
+                                        <span className="text-xs">{achievement.name}</span>
+                                    </div>
+                                );
+                            })}
                         </CardContent>
                     </Card>
                 )}

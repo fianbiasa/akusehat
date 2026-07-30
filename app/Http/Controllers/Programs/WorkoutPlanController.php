@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Programs\Concerns\AuthorizesProgramAccess;
 use App\Models\UserProgram;
 use App\Models\WorkoutPlan;
+use App\Services\Admin\ActivityLogger;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,6 +14,8 @@ use Illuminate\Http\Request;
 class WorkoutPlanController extends Controller
 {
     use AuthorizesProgramAccess;
+
+    public function __construct(private ActivityLogger $activityLogger) {}
 
     public function index(Request $request, UserProgram $userProgram): JsonResponse
     {
@@ -41,6 +44,7 @@ class WorkoutPlanController extends Controller
 
         if (isset($validated['duration_minutes'])) {
             $validated['source'] = 'manual';
+            $this->activityLogger->log('workout_plan.overridden', $workoutPlan, ['duration_minutes' => $validated['duration_minutes']]);
         }
 
         $workoutPlan->update($validated);

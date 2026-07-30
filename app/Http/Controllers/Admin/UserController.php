@@ -50,8 +50,12 @@ class UserController extends Controller
         $user = User::create([
             ...$validated,
             'password' => Hash::make($validated['password']),
-            'email_verified_at' => now(),
         ]);
+
+        // email_verified_at is system-managed, not user-fillable (see
+        // App\Models\User) - forceFill bypasses that guard the same way
+        // OnboardingController does for onboarding_completed_at.
+        $user->forceFill(['email_verified_at' => now()])->save();
 
         // Coach accounts are Admin-created (FR-COACH); the coach fills in
         // their own bio/specialization afterward, so the row always

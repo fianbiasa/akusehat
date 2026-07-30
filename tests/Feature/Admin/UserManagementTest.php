@@ -48,6 +48,7 @@ class UserManagementTest extends TestCase
             ->assertSessionHasNoErrors();
 
         $this->assertDatabaseHas('users', ['email' => 'coach@example.com', 'role_id' => $memberRoleId]);
+        $this->assertNotNull(User::where('email', 'coach@example.com')->value('email_verified_at'));
     }
 
     public function test_admin_can_update_a_users_role_and_status()

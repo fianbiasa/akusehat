@@ -150,6 +150,7 @@ class OnboardingWizardTest extends TestCase
 
         $this->assertDatabaseHas('user_programs', ['user_id' => $user->id, 'status' => 'active']);
         Bus::assertDispatched(GenerateProgramJob::class, fn ($job) => $job->userProgram->user_id === $user->id);
+        $this->assertDatabaseHas('activity_logs', ['user_id' => $user->id, 'action' => 'program.created']);
     }
 
     public function test_a_user_cannot_answer_into_another_users_session()

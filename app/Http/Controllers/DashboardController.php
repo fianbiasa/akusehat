@@ -35,6 +35,8 @@ class DashboardController extends Controller
                 ->first();
         }
 
+        $recentAchievements = $user->achievements()->orderByDesc('user_achievements.earned_at')->limit(3)->get(['achievements.id', 'achievements.name', 'achievements.icon']);
+
         $latestWeightLog = $user->weightLogs()->latest('logged_at')->first(['weight_kg', 'logged_at']);
         $latestHealthScore = $user->healthScores()->latest('scored_at')->first(['score', 'scored_at']);
         $yesterdayScore = $latestHealthScore
@@ -65,6 +67,7 @@ class DashboardController extends Controller
                 'ai_summary' => $weeklyReview->ai_summary,
                 'ai_review' => $weeklyReview->ai_review,
             ] : null,
+            'recentAchievements' => $recentAchievements,
         ]);
     }
 }

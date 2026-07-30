@@ -36,6 +36,11 @@ class CoachRecommendationControllerTest extends TestCase
         $this->assertSame($coach->id, $recommendation->reviewed_by);
         $this->assertNotNull($recommendation->applied_at);
         Notification::assertSentTo($member, RecommendationReviewed::class);
+        $this->assertDatabaseHas('activity_logs', [
+            'user_id' => $coach->id,
+            'action' => 'recommendation.approved',
+            'subject_id' => $recommendation->id,
+        ]);
     }
 
     public function test_rejecting_a_recommendation_sets_status_rejected_and_stores_the_reason()
@@ -56,6 +61,11 @@ class CoachRecommendationControllerTest extends TestCase
         $this->assertSame('rejected', $recommendation->status);
         $this->assertSame('Tidak sesuai kondisi member.', $recommendation->content['rejection_reason']);
         Notification::assertSentTo($member, RecommendationReviewed::class);
+        $this->assertDatabaseHas('activity_logs', [
+            'user_id' => $coach->id,
+            'action' => 'recommendation.rejected',
+            'subject_id' => $recommendation->id,
+        ]);
     }
 
     public function test_a_coach_cannot_approve_a_recommendation_for_an_unassigned_member()
