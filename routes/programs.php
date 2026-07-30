@@ -15,7 +15,7 @@ Route::middleware(['auth', 'onboarding.completed'])->group(function () {
     Route::get('programs/catalog', [ProgramCatalogController::class, 'index'])->name('programs.catalog');
 
     Route::get('user-programs', [UserProgramController::class, 'index'])->name('user-programs.index');
-    Route::post('user-programs', [UserProgramController::class, 'store'])->name('user-programs.store');
+    Route::post('user-programs', [UserProgramController::class, 'store'])->middleware('plan.program_limit')->name('user-programs.store');
     Route::get('user-programs/{userProgram}', [UserProgramController::class, 'show'])->name('user-programs.show');
     Route::patch('user-programs/{userProgram}', [UserProgramController::class, 'update'])->name('user-programs.update');
     Route::post('user-programs/{userProgram}/regenerate', [UserProgramController::class, 'regenerate'])->name('user-programs.regenerate');

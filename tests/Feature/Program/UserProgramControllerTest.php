@@ -31,6 +31,19 @@ class UserProgramControllerTest extends TestCase
         Bus::assertDispatched(GenerateProgramJob::class);
     }
 
+    public function test_a_member_on_the_free_plan_cannot_start_a_second_program()
+    {
+        Bus::fake();
+        $user = $this->onboardedMember();
+        $program = Program::where('slug', 'diet-90-hari')->firstOrFail();
+        $user->programs()->create([
+            'program_id' => $program->id, 'status' => 'active',
+            'start_date' => today(), 'end_date' => today()->addDays(89), 'created_by' => 'ai',
+        ]);
+
+        $this->actingAs($user)->post('/user-programs', ['program_id' => $program->id])->assertForbidden();
+    }
+
     public function test_the_program_detail_page_renders_for_the_owner()
     {
         Bus::fake();

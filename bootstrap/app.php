@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\EnsureOnboardingCompleted;
 use App\Http\Middleware\EnsurePermission;
+use App\Http\Middleware\EnsureWithinProgramLimit;
 use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -34,6 +35,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'permission' => EnsurePermission::class,
             'onboarding.completed' => EnsureOnboardingCompleted::class,
+            'plan.program_limit' => EnsureWithinProgramLimit::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

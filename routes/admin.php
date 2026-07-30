@@ -4,8 +4,10 @@ use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\AiProviderController;
 use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\CoachAssignmentController;
+use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\RuleEngineController;
+use App\Http\Controllers\Admin\SubscriptionController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -47,5 +49,12 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::middleware('permission:analytics.view')->group(function () {
         Route::get('analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
         Route::get('activity-log', [ActivityLogController::class, 'index'])->name('activity-log.index');
+    });
+
+    Route::middleware('permission:subscriptions.manage')->group(function () {
+        Route::get('plans', [PlanController::class, 'index'])->name('plans.index');
+        Route::post('plans', [PlanController::class, 'store'])->name('plans.store');
+        Route::patch('plans/{plan}', [PlanController::class, 'update'])->name('plans.update');
+        Route::get('subscriptions', [SubscriptionController::class, 'index'])->name('subscriptions.index');
     });
 });

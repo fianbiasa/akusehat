@@ -262,4 +262,21 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Review::class, 'member_id');
     }
+
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    /**
+     * "trialing" counts as active for gating purposes (PRD §14's
+     * status enum treats both as currently-entitled); only one of
+     * these should ever exist per user at a time, enforced by
+     * SubscriptionService rather than a DB constraint (same reasoning
+     * as activeCoachAssignment()).
+     */
+    public function activeSubscription(): HasOne
+    {
+        return $this->hasOne(Subscription::class)->whereIn('status', ['trialing', 'active'])->latest('id');
+    }
 }

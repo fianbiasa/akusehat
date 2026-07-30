@@ -25,3 +25,4 @@ require __DIR__.'/programs.php';
 require __DIR__.'/progress.php';
 require __DIR__.'/coach.php';
 require __DIR__.'/chat.php';
+require __DIR__.'/subscription.php';

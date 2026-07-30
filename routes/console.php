@@ -6,6 +6,7 @@ use App\Jobs\EvaluateAchievementsJob;
 use App\Jobs\GenerateWeeklyReviewJob;
 use App\Jobs\PruneAIMemoryRelevanceJob;
 use App\Jobs\ScanAIMemoryJob;
+use App\Jobs\SubscriptionRenewalCheckJob;
 use App\Models\WeeklyPlan;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -15,8 +16,7 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-// 04-Architecture.md §6 — Scheduled Jobs. SubscriptionRenewalCheckJob is
-// Phase 11+ and registered when that phase builds its tables/job.
+// 04-Architecture.md §6 — Scheduled Jobs.
 Schedule::job(new DispatchRemindersJob)->everyMinute();
 
 Schedule::job(new ScanAIMemoryJob)->daily();
@@ -24,6 +24,8 @@ Schedule::job(new ScanAIMemoryJob)->daily();
 Schedule::job(new ComputeHealthScoreJob)->daily();
 
 Schedule::job(new EvaluateAchievementsJob)->daily();
+
+Schedule::job(new SubscriptionRenewalCheckJob)->daily();
 
 Schedule::job(new PruneAIMemoryRelevanceJob)->weekly();
 

@@ -8,6 +8,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Services\Admin\ActivityLogger;
 use App\Services\Coach\CoachAssignmentService;
+use App\Services\Subscription\SubscriptionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -15,7 +16,11 @@ use Illuminate\Validation\Rule;
 
 class CoachAssignmentController extends Controller
 {
-    public function __construct(private CoachAssignmentService $service, private ActivityLogger $activityLogger) {}
+    public function __construct(
+        private CoachAssignmentService $service,
+        private ActivityLogger $activityLogger,
+        private SubscriptionService $subscriptions,
+    ) {}
 
     public function index(): JsonResponse
     {
@@ -35,6 +40,8 @@ class CoachAssignmentController extends Controller
 
         $coach = User::findOrFail($validated['coach_id']);
         $member = User::findOrFail($validated['member_id']);
+
+        abort_unless($this->subscriptions->hasCoachAccess($member), 422, 'Paket langganan member ini tidak mencakup akses Coach.');
 
         $this->service->assign($coach, $member);
 

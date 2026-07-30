@@ -173,13 +173,16 @@
 
 ## Phase 11 — Subscription Scaffolding (schema + gating, no live gateway in v1)
 
-- [ ] Migrations: `plans`, `subscriptions`, `payments`
-- [ ] Seed: default plan tiers
-- [ ] `SubscriptionRenewalCheckJob` (scheduled, flags expiring)
-- [ ] Plan-based gating middleware (`max_programs`, `has_coach_access`)
-- [ ] API: plans catalog, subscription status, sandboxed subscribe/cancel (§14 of [05-API-Specification.md](05-API-Specification.md))
-- [ ] React: Subscription tab in Settings ([wireframe/settings.md](../wireframe/settings.md))
-- [ ] Admin: plans CRUD + subscriptions list
+- [x] Migrations: `plans`, `subscriptions`, `payments`
+- [x] Seed: default plan tiers — `PlanSeeder`: Gratis (free, max_programs=1, no coach access), Premium Bulanan, Premium Tahunan (both max_programs=3, coach access) — neither the PRD nor wireframe name actual tiers/pricing (PRD §12 leaves the AI-cost/pricing model as an open business question), so this is a designed scaffold, not a business decision.
+- [x] `SubscriptionRenewalCheckJob` (scheduled, flags expiring) — daily job transitions `active` subscriptions past `ends_at` to `expired` (+ `SubscriptionExpired` notification) and flags ones expiring in exactly 7 days (+ `SubscriptionExpiringSoon` notification). No live gateway means there's no actual "renewal" to attempt — this only detects and notifies. Once expired, a user's next `SubscriptionService::currentSubscription()` call lazily re-enrolls them onto Gratis rather than the job inserting that row itself.
+- [x] Plan-based gating middleware (`max_programs`, `has_coach_access`) — `max_programs` is real Illuminate middleware (`plan.program_limit` → `EnsureWithinProgramLimit`) on `POST /user-programs`, since it only needs the request's own user. `has_coach_access` is checked inline in `Admin\CoachAssignmentController::store()` instead of literal middleware, since that check needs the *target member* being assigned (a route param), not the acting admin — documented in both files.
+- [x] API: plans catalog, subscription status, sandboxed subscribe/cancel (§14 of [05-API-Specification.md](05-API-Specification.md)) — `GET /plans` (public), `GET /subscription` (Inertia page, matching every other Settings-tab endpoint in this app), `POST /subscription/subscribe` simulates an instantly-successful payment (no live gateway in v1; `payments.provider` has no "sandbox" enum value, so `midtrans` is used as the placeholder with an obviously-fake `provider_reference`), `POST /subscription/cancel` (cancel-at-period-end, blocked on the free plan or an already-cancelled subscription), `GET /subscription/payments`.
+- [x] React: Subscription tab in Settings ([wireframe/settings.md](../wireframe/settings.md)) — "Langganan" tab at `/subscription`: current plan/status/usage, plan comparison cards, cancel dialog, payment history table.
+- [x] Admin: plans CRUD + subscriptions list — `/admin/plans` (create/edit, `ActivityLogger`-wired), `/admin/subscriptions` (filterable by status/plan), gated by a new `subscriptions.manage` permission (admin-only).
+- Every new registration is eagerly enrolled onto Gratis via a `Registered` event listener (`AssignDefaultPlan`); `SubscriptionService::currentSubscription()` also lazily backfills it for any user reached another way (pre-Phase-11 existing accounts, or a just-expired subscription), so gating code never has to null-check a user's plan.
+- A pre-existing Phase 8 test (`CoachAssignmentControllerTest`) needed updating: assigning a coach now requires the member's plan to include coach access, so the test's plain factory member had to be subscribed to a paid plan first — a real, correct interaction between two phases' features, not a regression.
+- 344/344 tests passing.
 
 ## Phase 12 — App Settings & Cross-Cutting
 

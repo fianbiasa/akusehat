@@ -5,7 +5,20 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { usePermission } from '@/hooks/use-permission';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BarChart3, BookOpen, Bot, Folder, History, LayoutGrid, ListChecks, MessageCircle, ShieldCheck, TrendingUp, Users } from 'lucide-react';
+import {
+    BarChart3,
+    BookOpen,
+    Bot,
+    CreditCard,
+    Folder,
+    History,
+    LayoutGrid,
+    ListChecks,
+    MessageCircle,
+    ShieldCheck,
+    TrendingUp,
+    Users,
+} from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -59,6 +72,16 @@ const adminNavItems: NavItem[] = [
         title: 'Activity Log',
         url: '/admin/activity-log',
         icon: History,
+    },
+    {
+        title: 'Plans',
+        url: '/admin/plans',
+        icon: CreditCard,
+    },
+    {
+        title: 'Subscriptions',
+        url: '/admin/subscriptions',
+        icon: CreditCard,
     },
 ];
 

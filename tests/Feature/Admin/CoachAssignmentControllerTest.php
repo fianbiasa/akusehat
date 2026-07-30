@@ -2,9 +2,11 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Models\Plan;
 use App\Models\Program;
 use App\Models\Role;
 use App\Models\User;
+use App\Services\Subscription\SubscriptionService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -27,6 +29,7 @@ class CoachAssignmentControllerTest extends TestCase
         $admin = $this->admin();
         $coach = $this->coach();
         $member = User::factory()->create();
+        app(SubscriptionService::class)->subscribe($member, Plan::where('slug', 'premium-bulanan')->firstOrFail());
 
         $this->actingAs($admin)->post('/admin/coach-members', [
             'coach_id' => $coach->id,
@@ -34,6 +37,20 @@ class CoachAssignmentControllerTest extends TestCase
         ])->assertSessionHasNoErrors();
 
         $this->assertDatabaseHas('coach_members', ['coach_id' => $coach->id, 'member_id' => $member->id, 'status' => 'active']);
+    }
+
+    public function test_a_member_on_a_plan_without_coach_access_cannot_be_assigned_a_coach()
+    {
+        $admin = $this->admin();
+        $coach = $this->coach();
+        $member = User::factory()->create();
+
+        $this->actingAs($admin)->post('/admin/coach-members', [
+            'coach_id' => $coach->id,
+            'member_id' => $member->id,
+        ])->assertStatus(422);
+
+        $this->assertDatabaseMissing('coach_members', ['coach_id' => $coach->id, 'member_id' => $member->id]);
     }
 
     public function test_the_coach_id_must_actually_belong_to_a_coach_role_user()

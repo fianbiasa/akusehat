@@ -6,6 +6,7 @@ use App\Events\AIRecommendationCreated;
 use App\Events\CheckInSubmitted;
 use App\Events\OnboardingCompleted;
 use App\Events\ProgramGenerated;
+use App\Listeners\AssignDefaultPlan;
 use App\Listeners\DispatchInitialProgramGeneration;
 use App\Listeners\FeedAIMemoryOnCheckIn;
 use App\Listeners\MapOnboardingAnswersToHealthProfile;
@@ -17,6 +18,7 @@ use App\Models\LifestyleProfile;
 use App\Observers\BodyMeasurementObserver;
 use App\Observers\LifestyleProfileObserver;
 use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -52,6 +54,7 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(CheckInSubmitted::class, FeedAIMemoryOnCheckIn::class);
         Event::listen(AIRecommendationCreated::class, NotifyCoachOfPendingRecommendation::class);
         Event::listen(Login::class, RecordLastLogin::class);
+        Event::listen(Registered::class, AssignDefaultPlan::class);
 
         BodyMeasurement::observe(BodyMeasurementObserver::class);
         LifestyleProfile::observe(LifestyleProfileObserver::class);

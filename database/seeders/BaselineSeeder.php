@@ -24,5 +24,6 @@ class BaselineSeeder extends Seeder
         $this->call(OnboardingQuestionSeeder::class);
         $this->call(ProgramSeeder::class);
         $this->call(AchievementSeeder::class);
+        $this->call(PlanSeeder::class);
     }
 }
