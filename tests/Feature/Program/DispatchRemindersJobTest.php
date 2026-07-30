@@ -39,7 +39,16 @@ class DispatchRemindersJobTest extends TestCase
 
         $user->reminders()->create([
             'type' => 'water', 'title' => 'Minum air', 'scheduled_at' => $now->format('H:i'),
-            'is_recurring' => true, 'is_active' => true, 'last_sent_at' => $now,
+            // last_sent_at must be written the same way the real job writes
+            // it (plain now(), i.e. relative to config('app.timezone')) -
+            // Eloquent's datetime cast stores/reads back a bare wall-clock
+            // string with no embedded timezone, so writing this fixture in
+            // the user's timezone instead only round-trips correctly by
+            // coincidence when config('app.timezone') === $user->timezone.
+            // It silently breaks whenever they differ (e.g. CI's
+            // .env.example defaults APP_TIMEZONE to UTC) - not a day-of-run
+            // fluke, a real test/production mismatch.
+            'is_recurring' => true, 'is_active' => true, 'last_sent_at' => now(),
         ]);
 
         (new DispatchRemindersJob)->handle();
