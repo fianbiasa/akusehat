@@ -12,9 +12,8 @@ use Illuminate\Http\Request;
 
 /**
  * Read-only search/browse per docs/05-API-Specification.md §12. Content
- * itself is admin-curated (Phase 4's Admin CRUD covers rule_engine_rules;
- * KB content CRUD screens for foods/exercises/articles/FAQs are deferred -
- * see docs/11-Development-Checklist.md Phase 4).
+ * itself is admin-curated via Admin\Kb*Controller (foods/exercises/
+ * diseases/articles/FAQs).
  */
 class KbController extends Controller
 {

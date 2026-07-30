@@ -1,10 +1,17 @@
 <?php
 
 use App\Http\Controllers\Admin\ActivityLogController;
+use App\Http\Controllers\Admin\AiPromptTemplateController;
 use App\Http\Controllers\Admin\AiProviderController;
+use App\Http\Controllers\Admin\AiRequestLogController;
 use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\AppSettingController;
 use App\Http\Controllers\Admin\CoachAssignmentController;
+use App\Http\Controllers\Admin\KbDiseaseController;
+use App\Http\Controllers\Admin\KbExerciseController;
+use App\Http\Controllers\Admin\KbFaqController;
+use App\Http\Controllers\Admin\KbFoodController;
+use App\Http\Controllers\Admin\KbNutritionArticleController;
 use App\Http\Controllers\Admin\OnboardingQuestionController;
 use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\RoleController;
@@ -40,6 +47,11 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::patch('providers/{provider}', [AiProviderController::class, 'update'])->name('providers.update');
         Route::post('providers/{provider}/models', [AiProviderController::class, 'storeModel'])->name('providers.models.store');
         Route::patch('models/{model}', [AiProviderController::class, 'updateModel'])->name('models.update');
+
+        Route::get('prompt-templates', [AiPromptTemplateController::class, 'index'])->name('prompt-templates.index');
+        Route::patch('prompt-templates/{promptTemplate}', [AiPromptTemplateController::class, 'update'])->name('prompt-templates.update');
+
+        Route::get('request-logs', [AiRequestLogController::class, 'index'])->name('request-logs.index');
     });
 
     Route::middleware('permission:coach_members.manage')->group(function () {
@@ -73,5 +85,44 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::post('{question}/toggle-active', [OnboardingQuestionController::class, 'toggleActive'])->name('toggle-active');
         Route::post('{question}/move-up', [OnboardingQuestionController::class, 'moveUp'])->name('move-up');
         Route::post('{question}/move-down', [OnboardingQuestionController::class, 'moveDown'])->name('move-down');
+    });
+
+    Route::middleware('permission:knowledge_base.manage')->prefix('kb')->name('kb.')->group(function () {
+        Route::prefix('foods')->name('foods.')->group(function () {
+            Route::get('/', [KbFoodController::class, 'index'])->name('index');
+            Route::post('/', [KbFoodController::class, 'store'])->name('store');
+            Route::patch('{food}', [KbFoodController::class, 'update'])->name('update');
+            Route::delete('{food}', [KbFoodController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('exercises')->name('exercises.')->group(function () {
+            Route::get('/', [KbExerciseController::class, 'index'])->name('index');
+            Route::post('/', [KbExerciseController::class, 'store'])->name('store');
+            Route::patch('{exercise}', [KbExerciseController::class, 'update'])->name('update');
+            Route::delete('{exercise}', [KbExerciseController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('diseases')->name('diseases.')->group(function () {
+            Route::get('/', [KbDiseaseController::class, 'index'])->name('index');
+            Route::post('/', [KbDiseaseController::class, 'store'])->name('store');
+            Route::patch('{disease}', [KbDiseaseController::class, 'update'])->name('update');
+            Route::delete('{disease}', [KbDiseaseController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('articles')->name('articles.')->group(function () {
+            Route::get('/', [KbNutritionArticleController::class, 'index'])->name('index');
+            Route::post('/', [KbNutritionArticleController::class, 'store'])->name('store');
+            Route::patch('{article}', [KbNutritionArticleController::class, 'update'])->name('update');
+            Route::post('{article}/toggle-published', [KbNutritionArticleController::class, 'togglePublished'])->name('toggle-published');
+        });
+
+        Route::prefix('faqs')->name('faqs.')->group(function () {
+            Route::get('/', [KbFaqController::class, 'index'])->name('index');
+            Route::post('/', [KbFaqController::class, 'store'])->name('store');
+            Route::patch('{faq}', [KbFaqController::class, 'update'])->name('update');
+            Route::post('{faq}/toggle-published', [KbFaqController::class, 'togglePublished'])->name('toggle-published');
+            Route::post('{faq}/move-up', [KbFaqController::class, 'moveUp'])->name('move-up');
+            Route::post('{faq}/move-down', [KbFaqController::class, 'moveDown'])->name('move-down');
+        });
     });
 });

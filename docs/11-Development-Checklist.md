@@ -72,7 +72,7 @@
 - [x] `RuleEngineConditionEvaluator`: implement condition DSL (`>=`,`<=`,`>`,`<`,`==`,`in`,`and`,`or`,`not`)
 - [x] `RuleEngineService::evaluate(User $user): array` — priority-based conflict resolution across categories; `disease_restriction` accumulates (union) rather than overwrites, since a user can have multiple conditions at once
 - [x] Admin: Rule Engine CRUD + "Uji Coba" (test-against-sample-profile) endpoint/UI
-- [ ] Admin: Knowledge Base CRUD (foods/exercises/diseases/articles/FAQ) + React pages — deferred; read-only search exists, editing UI does not yet
+- [x] Admin: Knowledge Base CRUD (foods/exercises/diseases/articles/FAQ) + React pages — 5 lightweight `Admin\Kb*Controller`s (not one unified tabbed screen), reusing the existing `knowledge_base.manage` permission; foods/exercises delete for real (their FKs are `ON DELETE SET NULL`), diseases/articles/FAQ use a soft toggle or a proactive reference check instead of a hard delete, matching Rule Engine's precedent
 - [x] KB search endpoints (`?q=&category=&tags[]=`)
 - [x] Unit tests: rule evaluator against each example rule in [08-Knowledge-Base.md](08-Knowledge-Base.md) §3
 - [x] Unit tests: conflict resolution (two rules same category, priority wins)
@@ -94,8 +94,8 @@
 - [x] `AIResponseProcessor`: JSON decode + schema validation + retry (≤2) + Rule-Engine fallback
 - [x] Member: AI Settings CRUD (provider/model/API key/temperature) + "Test Connection" + React page ([wireframe/settings.md](../wireframe/settings.md)) — shown as a list of configured provider rows (not the wireframe's single radio group), since failover requires more than one saved provider at a time
 - [x] Admin: AI Provider/Model CRUD + React pages
-- [ ] Admin: Prompt Template editor (with version bump on save) + React page — deferred; templates are seed-managed only for now
-- [ ] Admin: AI request log viewer + cost dashboard — deferred; `ai_request_logs` is written correctly (verified via tinker + tests) but has no viewer UI yet
+- [x] Admin: Prompt Template editor (with version bump on save) + React page — edit-only (no create/delete: `key` is referenced directly by app code), every save increments `version` per FR-PB-03 so historic `ai_request_logs` are never retroactively reinterpreted
+- [x] Admin: AI request log viewer + cost dashboard — filterable by purpose/status/provider, with total requests/success rate/total estimated cost/avg latency tiles plus a cost-by-purpose breakdown table
 - [x] Unit tests: each provider adapter against a mocked HTTP client (request shape correctness)
 - [x] Unit tests: `AIResponseProcessor` retry/fallback branches
 - [ ] Integration test: at least 2 real providers (1 cloud, 1 local) end-to-end against a sandbox/dev key — not possible in this environment (no real API keys/local model server available); covered instead by `Http::fake()`-based tests plus a live HTTP smoke test that hit the real OpenAI API with an invalid key and a local Ollama endpoint with nothing listening, confirming both failure paths degrade gracefully over real network calls

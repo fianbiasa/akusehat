@@ -4,6 +4,15 @@ All notable changes to this specification/documentation set are recorded here. T
 
 ## [Unreleased] - Application build progress
 
+### Deferred Admin CRUD: Knowledge Base, Prompt Templates, AI Request Log (2026-07-30)
+- Closed out the three Admin screens that had been explicitly deferred since Phases 4/5 (`docs/11-Development-Checklist.md`), the last real "features" remaining before Phase 14 (QA & Launch):
+  - **Knowledge Base CRUD** — 5 lightweight `Admin\Kb*Controller`s (foods/exercises/diseases/articles/FAQ) rather than one unified tabbed screen, reusing the existing `knowledge_base.manage` permission. Foods/exercises delete for real (`meal_plan_items`/`workout_plan_items` FKs are `ON DELETE SET NULL`, so nothing can break); diseases check `user_diseases` for an existing reference before allowing delete (that FK is `RESTRICT`) instead of catching a `QueryException` — PHPStan/Larastan correctly flagged the try/catch as dead code for the two `SET NULL` tables, which caught a real over-defensive-code smell before it shipped. Articles/FAQs use the existing `is_published` toggle instead of delete.
+  - **Prompt Template editor** — edit-only (the seeded `key` is referenced directly by app code, so create/delete isn't offered); every save bumps `version` per PRD FR-PB-03, so historic `ai_request_logs` are never retroactively reinterpreted against a newer template.
+  - **AI Request Log viewer** — filterable by purpose/status/provider, with total-requests/success-rate/total-estimated-cost/avg-latency tiles and a cost-by-purpose breakdown table.
+  - 29 new feature tests + 425/425 total passing; PHPStan clean (0 new findings).
+- **Real bug found and fixed while smoke-testing with the user's own Claude API key**: `ClaudeProvider` unconditionally sent a `temperature` parameter on every request; Anthropic's API rejects it for `claude-sonnet-5` ("temperature is deprecated for this model", HTTP 400) — every Claude call in the app (chat, plan generation, weekly review, everything) was silently broken for any account using this model. Confirmed root cause with a live raw HTTP call using the real key, fixed by no longer sending `temperature` to Claude, re-verified live, and added a regression test.
+- Checklist updated: Phase 4/5's three deferred bullets checked off.
+
 ### Real landing page (2026-07-30)
 - Found via the user's own live testing: the public homepage (`/`) had been serving the unmodified Laravel/React starter-kit's default "Welcome" boilerplate ("Let's get started", links to Laravel's own docs/Laracasts) through all 13 prior phases — every phase's work happened behind login, so nothing had touched the actual public-facing marketing page since Phase 0 scaffolding, and no wireframe/PRD doc ever specified one either.
 - Replaced with a real AkuSehat landing page: hero + CTA, a 6-item feature grid, a 4-step "how it works" section, a pricing section rendering the real, live `plans` catalog (fetched server-side, so it always reflects whatever Admin has configured), and a closing CTA. Uses the same teal brand color already established by the PWA icon/theme-color.

@@ -60,6 +60,16 @@ class ProviderRequestShapeTest extends TestCase
         });
     }
 
+    public function test_claude_omits_temperature_since_the_api_rejects_it_for_newer_models()
+    {
+        Http::fake(['api.anthropic.com/*' => Http::response(['content' => [['text' => '{"ok":true}']]], 200)]);
+
+        $provider = new ClaudeProvider(apiKey: 'sk-ant-test', modelKey: 'claude-sonnet-5', temperature: 0.9);
+        $provider->analyze(['prompt' => 'hello']);
+
+        Http::assertSent(fn (Request $request) => ! isset($request['temperature']));
+    }
+
     public function test_claude_folds_system_content_into_the_first_user_turn()
     {
         Http::fake(['*' => Http::response(['content' => [['text' => '{"reply":"hi"}']]], 200)]);

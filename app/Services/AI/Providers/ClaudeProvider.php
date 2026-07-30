@@ -21,7 +21,11 @@ class ClaudeProvider extends AbstractHttpProvider
                 ->post(($this->baseUrl ?: 'https://api.anthropic.com/v1').'/messages', [
                     'model' => $this->modelKey,
                     'max_tokens' => 4096,
-                    'temperature' => $this->temperature,
+                    // Newer Claude models (e.g. claude-sonnet-5) reject a
+                    // custom `temperature` outright: "temperature is
+                    // deprecated for this model" (HTTP 400). Sampling is
+                    // left at the model's default instead of exposing a
+                    // control the API no longer honors.
                     'messages' => $this->toAnthropicMessages($messages),
                 ]);
 

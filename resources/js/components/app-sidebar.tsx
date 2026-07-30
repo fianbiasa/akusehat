@@ -6,15 +6,22 @@ import { usePermission } from '@/hooks/use-permission';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import {
+    Apple,
     BarChart3,
     BookOpen,
     Bot,
     CreditCard,
+    Dumbbell,
+    FileCode,
     Folder,
+    HeartPulse,
     History,
     LayoutGrid,
     ListChecks,
     MessageCircle,
+    MessageCircleQuestion,
+    Newspaper,
+    Receipt,
     Settings,
     ShieldCheck,
     TrendingUp,
@@ -66,6 +73,16 @@ const adminNavItems: NavItem[] = [
         icon: Bot,
     },
     {
+        title: 'Prompt Templates',
+        url: '/admin/ai/prompt-templates',
+        icon: FileCode,
+    },
+    {
+        title: 'AI Request Log',
+        url: '/admin/ai/request-logs',
+        icon: Receipt,
+    },
+    {
         title: 'Analytics',
         url: '/admin/analytics',
         icon: BarChart3,
@@ -94,6 +111,31 @@ const adminNavItems: NavItem[] = [
         title: 'Question Bank',
         url: '/admin/onboarding-questions',
         icon: HelpCircle,
+    },
+    {
+        title: 'KB: Makanan',
+        url: '/admin/kb/foods',
+        icon: Apple,
+    },
+    {
+        title: 'KB: Latihan',
+        url: '/admin/kb/exercises',
+        icon: Dumbbell,
+    },
+    {
+        title: 'KB: Penyakit',
+        url: '/admin/kb/diseases',
+        icon: HeartPulse,
+    },
+    {
+        title: 'KB: Artikel',
+        url: '/admin/kb/articles',
+        icon: Newspaper,
+    },
+    {
+        title: 'KB: FAQ',
+        url: '/admin/kb/faqs',
+        icon: MessageCircleQuestion,
     },
 ];
 
