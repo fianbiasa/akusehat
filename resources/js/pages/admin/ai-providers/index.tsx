@@ -110,7 +110,7 @@ function AddModelDialog({ provider }: { provider: Provider }) {
                         <Label>Model Key (API identifier)</Label>
                         <Input value={data.model_key} onChange={(e) => setData('model_key', e.target.value)} required />
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div className="grid gap-2">
                             <Label>Input cost /1k</Label>
                             <Input

@@ -6,6 +6,10 @@
 
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
+        <link rel="manifest" href="/manifest.json">
+        <link rel="icon" href="/icon.svg" type="image/svg+xml">
+        <meta name="theme-color" content="#0f766e">
+
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
 

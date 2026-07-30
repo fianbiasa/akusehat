@@ -15,10 +15,17 @@ Route::middleware(['auth', 'onboarding.completed'])->group(function () {
     Route::get('programs/catalog', [ProgramCatalogController::class, 'index'])->name('programs.catalog');
 
     Route::get('user-programs', [UserProgramController::class, 'index'])->name('user-programs.index');
-    Route::post('user-programs', [UserProgramController::class, 'store'])->middleware('plan.program_limit')->name('user-programs.store');
+    Route::post('user-programs', [UserProgramController::class, 'store'])
+        ->middleware(['plan.program_limit', 'throttle:5,1'])
+        ->name('user-programs.store');
     Route::get('user-programs/{userProgram}', [UserProgramController::class, 'show'])->name('user-programs.show');
     Route::patch('user-programs/{userProgram}', [UserProgramController::class, 'update'])->name('user-programs.update');
-    Route::post('user-programs/{userProgram}/regenerate', [UserProgramController::class, 'regenerate'])->name('user-programs.regenerate');
+
+    // Dispatches GenerateProgramJob (2 AI calls) - throttled to bound
+    // cost-abuse from repeated regeneration requests.
+    Route::post('user-programs/{userProgram}/regenerate', [UserProgramController::class, 'regenerate'])
+        ->middleware('throttle:5,1')
+        ->name('user-programs.regenerate');
     Route::get('user-programs/{userProgram}/generate/status', [UserProgramController::class, 'generateStatus'])->name('user-programs.generate-status');
 
     Route::get('user-programs/{userProgram}/goals', [ProgramGoalController::class, 'index'])->name('user-programs.goals.index');

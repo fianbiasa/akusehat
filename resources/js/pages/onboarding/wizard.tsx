@@ -111,9 +111,11 @@ export default function OnboardingWizard({ questions, session }: { questions: On
             </div>
 
             <div className="space-y-6">
-                <h1 className="text-center text-xl font-semibold text-balance">{question.question_text}</h1>
+                <h1 id="question-title" className="text-center text-xl font-semibold text-balance">
+                    {question.question_text}
+                </h1>
 
-                <QuestionInput question={question} value={value} onChange={setValue} />
+                <QuestionInput question={question} value={value} onChange={setValue} ariaLabelledBy="question-title" />
 
                 {error && <p className="text-destructive text-center text-sm">{error}</p>}
             </div>

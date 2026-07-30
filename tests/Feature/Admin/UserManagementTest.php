@@ -79,6 +79,20 @@ class UserManagementTest extends TestCase
         $this->assertTrue($user->fresh()->trashed());
     }
 
+    public function test_a_soft_deleted_user_no_longer_appears_in_the_users_list()
+    {
+        $admin = $this->admin();
+        $user = User::factory()->create(['name' => 'Soon Deleted']);
+        $this->actingAs($admin)->delete("/admin/users/{$user->id}");
+
+        $response = $this->actingAs($admin)->get('/admin/users');
+
+        $response->assertInertia(fn ($page) => $page->where(
+            'users.data',
+            fn ($users) => collect($users)->doesntContain(fn ($u) => $u['name'] === 'Soon Deleted'),
+        ));
+    }
+
     public function test_admin_cannot_delete_their_own_account_from_this_screen()
     {
         $admin = $this->admin();

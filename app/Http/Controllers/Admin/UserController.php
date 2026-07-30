@@ -91,6 +91,7 @@ class UserController extends Controller
 
         $this->activityLogger->log('user.deleted', $user, ['email' => $user->email]);
 
+        $user->tokens()->delete();
         $user->delete();
 
         return back();

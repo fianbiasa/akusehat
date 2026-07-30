@@ -8,10 +8,12 @@ export default function QuestionInput({
     question,
     value,
     onChange,
+    ariaLabelledBy,
 }: {
     question: OnboardingQuestion;
     value: AnswerValue;
     onChange: (value: AnswerValue) => void;
+    ariaLabelledBy?: string;
 }) {
     if (question.validation_rules?.repeatable) {
         return <RepeatableRows question={question} value={value as Record<string, string>[] | null} onChange={onChange} />;
@@ -22,6 +24,7 @@ export default function QuestionInput({
             return (
                 <Input
                     autoFocus
+                    aria-labelledby={ariaLabelledBy}
                     className="h-14 text-center text-lg"
                     value={(value as string) ?? ''}
                     onChange={(e) => onChange(e.target.value)}
@@ -33,6 +36,7 @@ export default function QuestionInput({
                 <Input
                     autoFocus
                     type="number"
+                    aria-labelledby={ariaLabelledBy}
                     className="h-14 text-center text-lg"
                     value={(value as string) ?? ''}
                     onChange={(e) => onChange(e.target.value === '' ? null : Number(e.target.value))}
@@ -43,6 +47,7 @@ export default function QuestionInput({
                 <Input
                     autoFocus
                     type="date"
+                    aria-labelledby={ariaLabelledBy}
                     className="h-14 text-center text-lg"
                     value={(value as string) ?? ''}
                     onChange={(e) => onChange(e.target.value)}
@@ -53,17 +58,41 @@ export default function QuestionInput({
                 <Input
                     autoFocus
                     type="time"
+                    aria-labelledby={ariaLabelledBy}
                     className="h-14 text-center text-lg"
                     value={(value as string) ?? ''}
                     onChange={(e) => onChange(e.target.value)}
                 />
             );
         case 'single_choice':
-            return <ChoiceCards options={question.options as string[]} value={value as string} multiple={false} onChange={onChange} />;
+            return (
+                <ChoiceCards
+                    options={question.options as string[]}
+                    value={value as string}
+                    multiple={false}
+                    onChange={onChange}
+                    ariaLabelledBy={ariaLabelledBy}
+                />
+            );
         case 'multi_choice':
-            return <ChoiceCards options={question.options as string[]} value={(value as string[]) ?? []} multiple onChange={onChange} />;
+            return (
+                <ChoiceCards
+                    options={question.options as string[]}
+                    value={(value as string[]) ?? []}
+                    multiple
+                    onChange={onChange}
+                    ariaLabelledBy={ariaLabelledBy}
+                />
+            );
         case 'scale':
-            return <ScaleInput options={question.options as { min: number; max: number }} value={value as number} onChange={onChange} />;
+            return (
+                <ScaleInput
+                    options={question.options as { min: number; max: number }}
+                    value={value as number}
+                    onChange={onChange}
+                    ariaLabelledBy={ariaLabelledBy}
+                />
+            );
         default:
             return null;
     }
@@ -74,11 +103,13 @@ function ChoiceCards({
     value,
     multiple,
     onChange,
+    ariaLabelledBy,
 }: {
     options: string[];
     value: string | string[];
     multiple: boolean;
     onChange: (value: AnswerValue) => void;
+    ariaLabelledBy?: string;
 }) {
     const selected = new Set(multiple ? (value as string[]) : value ? [value as string] : []);
 
@@ -88,16 +119,21 @@ function ChoiceCards({
             return;
         }
         const next = new Set(selected);
-        next.has(option) ? next.delete(option) : next.add(option);
+        if (next.has(option)) {
+            next.delete(option);
+        } else {
+            next.add(option);
+        }
         onChange(Array.from(next));
     };
 
     return (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2" role="group" aria-labelledby={ariaLabelledBy}>
             {options.map((option) => (
                 <button
                     key={option}
                     type="button"
+                    aria-pressed={selected.has(option)}
                     onClick={() => toggle(option)}
                     className={cn(
                         'rounded-lg border p-4 text-left text-sm transition-colors',
@@ -111,15 +147,26 @@ function ChoiceCards({
     );
 }
 
-function ScaleInput({ options, value, onChange }: { options: { min: number; max: number }; value: number; onChange: (value: AnswerValue) => void }) {
+function ScaleInput({
+    options,
+    value,
+    onChange,
+    ariaLabelledBy,
+}: {
+    options: { min: number; max: number };
+    value: number;
+    onChange: (value: AnswerValue) => void;
+    ariaLabelledBy?: string;
+}) {
     const steps = Array.from({ length: options.max - options.min + 1 }, (_, i) => options.min + i);
 
     return (
-        <div className="flex justify-center gap-2">
+        <div className="flex justify-center gap-2" role="group" aria-labelledby={ariaLabelledBy}>
             {steps.map((step) => (
                 <button
                     key={step}
                     type="button"
+                    aria-pressed={value === step}
                     onClick={() => onChange(step)}
                     className={cn(
                         'flex h-12 w-12 items-center justify-center rounded-full border text-sm font-medium transition-colors',
@@ -160,13 +207,14 @@ function RepeatableRows({
                     {fields.map((field) => (
                         <Input
                             key={field.key}
+                            aria-label={field.label}
                             placeholder={field.label}
                             value={row[field.key] ?? ''}
                             onChange={(e) => updateRow(index, field.key, e.target.value)}
                         />
                     ))}
                     {rows.length > 1 && (
-                        <Button type="button" variant="ghost" size="icon" onClick={() => removeRow(index)}>
+                        <Button type="button" variant="ghost" size="icon" aria-label="Hapus baris" onClick={() => removeRow(index)}>
                             <Trash2 className="h-4 w-4" />
                         </Button>
                     )}

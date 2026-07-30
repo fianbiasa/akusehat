@@ -79,6 +79,38 @@ class ProfileUpdateTest extends TestCase
         $this->assertTrue($user->fresh()->trashed());
     }
 
+    public function test_a_deleted_users_data_is_retained_not_hard_deleted()
+    {
+        $user = User::factory()->create();
+        $user->healthProfile()->create(['gender' => 'male', 'height_cm' => 170]);
+
+        $this->actingAs($user)->delete('/settings/profile', ['password' => 'password']);
+
+        $this->assertDatabaseHas('users', ['id' => $user->id]);
+        $this->assertDatabaseHas('health_profiles', ['user_id' => $user->id]);
+    }
+
+    public function test_a_deleted_user_can_no_longer_log_in()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->delete('/settings/profile', ['password' => 'password']);
+
+        $this->post('/login', ['email' => $user->email, 'password' => 'password']);
+
+        $this->assertGuest();
+    }
+
+    public function test_a_deleted_users_api_tokens_are_revoked()
+    {
+        $user = User::factory()->create();
+        $user->createToken('test-token');
+
+        $this->actingAs($user)->delete('/settings/profile', ['password' => 'password']);
+
+        $this->assertSame(0, $user->tokens()->count());
+    }
+
     public function test_correct_password_must_be_provided_to_delete_account()
     {
         $user = User::factory()->create();

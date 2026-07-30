@@ -9,5 +9,8 @@ Route::middleware(['auth', 'onboarding.completed'])->prefix('ai')->name('ai.')->
     Route::patch('settings/{setting}', [AiSettingsController::class, 'update'])->name('settings.update');
     Route::delete('settings/{setting}', [AiSettingsController::class, 'destroy'])->name('settings.destroy');
     Route::post('settings/{setting}/set-default', [AiSettingsController::class, 'setDefault'])->name('settings.set-default');
-    Route::post('settings/{setting}/test', [AiSettingsController::class, 'test'])->name('settings.test');
+    // Fires a real request to the configured provider each call.
+    Route::post('settings/{setting}/test', [AiSettingsController::class, 'test'])
+        ->middleware('throttle:10,1')
+        ->name('settings.test');
 });

@@ -279,4 +279,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne(Subscription::class)->whereIn('status', ['trialing', 'active'])->latest('id');
     }
+
+    public function dataExports(): HasMany
+    {
+        return $this->hasMany(DataExport::class);
+    }
 }

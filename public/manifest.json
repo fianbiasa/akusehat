@@ -1,0 +1,20 @@
+{
+    "name": "AkuSehat - AI Personal Health Coach",
+    "short_name": "AkuSehat",
+    "description": "Program diet & transformasi 90 hari yang dipersonalisasi dengan AI dan didampingi Coach.",
+    "start_url": "/dashboard",
+    "scope": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#0f766e",
+    "orientation": "portrait-primary",
+    "lang": "id",
+    "icons": [
+        {
+            "src": "/icon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ]
+}

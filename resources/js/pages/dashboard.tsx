@@ -2,6 +2,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
@@ -156,8 +157,17 @@ export default function Dashboard({
                                 <ul className="space-y-2">
                                     {checklist.map((item) => (
                                         <li key={item.id} className="flex items-center gap-3">
-                                            <Checkbox checked={item.is_checked} onCheckedChange={() => toggleChecklist(item)} />
-                                            <span className={item.is_checked ? 'text-muted-foreground line-through' : ''}>{item.label}</span>
+                                            <Checkbox
+                                                id={`checklist-${item.id}`}
+                                                checked={item.is_checked}
+                                                onCheckedChange={() => toggleChecklist(item)}
+                                            />
+                                            <Label
+                                                htmlFor={`checklist-${item.id}`}
+                                                className={item.is_checked ? 'text-muted-foreground font-normal line-through' : 'font-normal'}
+                                            >
+                                                {item.label}
+                                            </Label>
                                         </li>
                                     ))}
                                 </ul>

@@ -27,3 +27,15 @@ createInertiaApp({
 
 // This will set light / dark mode on load...
 initializeTheme();
+
+// PWA offline shell (Phase 13) - registered after load so it never
+// competes with the initial page's own network requests.
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {
+            // Offline support is a progressive enhancement - a failed
+            // registration (e.g. unsupported browser quirk) shouldn't
+            // surface as an error to the user.
+        });
+    });
+}

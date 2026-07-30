@@ -64,7 +64,7 @@ export default function AdminRuleEngineIndex({
                     </SelectContent>
                 </Select>
 
-                <div className="overflow-hidden rounded-lg border">
+                <div className="overflow-x-auto rounded-lg border">
                     <table className="w-full text-sm">
                         <thead className="bg-muted/50 text-left">
                             <tr>
@@ -162,7 +162,7 @@ function RuleFormDialog({ categories, rule, trigger }: { categories: string[]; r
             <DialogContent className="max-w-lg">
                 <DialogTitle>{rule ? 'Edit Rule' : 'Tambah Rule'}</DialogTitle>
                 <form onSubmit={submit} className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div className="grid gap-2">
                             <Label>Kategori</Label>
                             <Input value={data.category} onChange={(e) => setData('category', e.target.value)} required />
@@ -241,7 +241,7 @@ function TestRuleDialog({ rule }: { rule: Rule }) {
             </DialogTrigger>
             <DialogContent>
                 <DialogTitle>Uji Coba: {rule.name}</DialogTitle>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <Input placeholder="bmi" value={sample.bmi} onChange={(e) => setSample({ ...sample, bmi: e.target.value })} />
                     <Input placeholder="age" value={sample.age} onChange={(e) => setSample({ ...sample, age: e.target.value })} />
                     <Input

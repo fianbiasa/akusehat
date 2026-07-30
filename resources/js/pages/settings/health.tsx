@@ -158,7 +158,7 @@ function HealthProfileForm({ profile }: { profile: HealthProfile }) {
                 </div>
             )}
 
-            <form onSubmit={submit} className="grid grid-cols-2 gap-4">
+            <form onSubmit={submit} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="grid gap-2">
                     <Label htmlFor="date_of_birth">Tanggal Lahir</Label>
                     <Input id="date_of_birth" type="date" value={data.date_of_birth} onChange={(e) => setData('date_of_birth', e.target.value)} />
@@ -218,7 +218,7 @@ function LifestyleProfileForm({ profile }: { profile: LifestyleProfile }) {
         <div className="space-y-4">
             <HeadingSmall title="Gaya Hidup" description="Aktivitas dan kebiasaan sehari-hari" />
 
-            <form onSubmit={submit} className="grid grid-cols-2 gap-4">
+            <form onSubmit={submit} className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div className="grid gap-2">
                     <Label>Tingkat Aktivitas</Label>
                     <Select value={data.activity_level} onValueChange={(v) => setData('activity_level', v)}>
