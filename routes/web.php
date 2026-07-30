@@ -2,11 +2,14 @@
 
 use App\Http\Controllers\AchievementController;
 use App\Http\Controllers\DashboardController;
+use App\Models\Plan;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('welcome');
+    return Inertia::render('welcome', [
+        'plans' => Plan::where('is_active', true)->orderBy('price')->get(['id', 'name', 'price', 'billing_cycle', 'features', 'has_coach_access']),
+    ]);
 })->name('home');
 
 Route::middleware(['auth', 'onboarding.completed'])->group(function () {

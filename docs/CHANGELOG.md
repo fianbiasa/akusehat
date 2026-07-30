@@ -4,6 +4,11 @@ All notable changes to this specification/documentation set are recorded here. T
 
 ## [Unreleased] - Application build progress
 
+### Real landing page (2026-07-30)
+- Found via the user's own live testing: the public homepage (`/`) had been serving the unmodified Laravel/React starter-kit's default "Welcome" boilerplate ("Let's get started", links to Laravel's own docs/Laracasts) through all 13 prior phases — every phase's work happened behind login, so nothing had touched the actual public-facing marketing page since Phase 0 scaffolding, and no wireframe/PRD doc ever specified one either.
+- Replaced with a real AkuSehat landing page: hero + CTA, a 6-item feature grid, a 4-step "how it works" section, a pricing section rendering the real, live `plans` catalog (fetched server-side, so it always reflects whatever Admin has configured), and a closing CTA. Uses the same teal brand color already established by the PWA icon/theme-color.
+- `GET /` now passes `plans` (active plans only) as an Inertia prop instead of rendering the page with no data.
+
 ### Phase 13 — PWA / Accessibility / Non-Functional Hardening (2026-07-30)
 - **Production infrastructure gap found and fixed**: no persistent queue worker or scheduler was running for akusehat.web.id at all — every queued job and every `routes/console.php` scheduled job had only ever executed via manual `artisan queue:work`/tinker invocations during this project's live smoke tests, never automatically. Fixed by adding `/etc/supervisor/conf.d/akusehat-worker.conf` (2 `queue:work` processes + 1 `schedule:work` process), matching the exact pattern other Laravel sites on this shared box already use via Supervisor.
 - PWA shell: `public/manifest.json`, `public/sw.js` (caches only content-hashed `/build/` assets + an `offline.html` fallback — deliberately never caches API/page data, since this app handles sensitive health data), a purpose-built `public/icon.svg`.
