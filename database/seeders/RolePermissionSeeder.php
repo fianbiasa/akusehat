@@ -41,6 +41,7 @@ class RolePermissionSeeder extends Seeder
             'coach_members.manage' => 'coach',
             'subscriptions.manage' => 'subscriptions',
             'app_settings.manage' => 'app_settings',
+            'onboarding_questions.manage' => 'onboarding',
         ];
 
         foreach ($permissions as $name => $module) {

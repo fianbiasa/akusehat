@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AiProviderController;
 use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\AppSettingController;
 use App\Http\Controllers\Admin\CoachAssignmentController;
+use App\Http\Controllers\Admin\OnboardingQuestionController;
 use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\RuleEngineController;
@@ -63,5 +64,14 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::get('/', [AppSettingController::class, 'edit'])->name('edit');
         Route::patch('ai-default', [AppSettingController::class, 'updateAiDefault'])->name('ai-default.update');
         Route::patch('maintenance-mode', [AppSettingController::class, 'updateMaintenanceMode'])->name('maintenance-mode.update');
+    });
+
+    Route::middleware('permission:onboarding_questions.manage')->prefix('onboarding-questions')->name('onboarding-questions.')->group(function () {
+        Route::get('/', [OnboardingQuestionController::class, 'index'])->name('index');
+        Route::post('/', [OnboardingQuestionController::class, 'store'])->name('store');
+        Route::patch('{question}', [OnboardingQuestionController::class, 'update'])->name('update');
+        Route::post('{question}/toggle-active', [OnboardingQuestionController::class, 'toggleActive'])->name('toggle-active');
+        Route::post('{question}/move-up', [OnboardingQuestionController::class, 'moveUp'])->name('move-up');
+        Route::post('{question}/move-down', [OnboardingQuestionController::class, 'moveDown'])->name('move-down');
     });
 });

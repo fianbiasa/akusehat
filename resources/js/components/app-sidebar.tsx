@@ -19,6 +19,7 @@ import {
     ShieldCheck,
     TrendingUp,
     Users,
+    HelpCircle,
 } from 'lucide-react';
 import AppLogo from './app-logo';
 
@@ -88,6 +89,11 @@ const adminNavItems: NavItem[] = [
         title: 'Platform Settings',
         url: '/admin/settings',
         icon: Settings,
+    },
+    {
+        title: 'Question Bank',
+        url: '/admin/onboarding-questions',
+        icon: HelpCircle,
     },
 ];
 
