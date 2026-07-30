@@ -5,7 +5,7 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { usePermission } from '@/hooks/use-permission';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Bot, Folder, LayoutGrid, ListChecks, MessageCircle, ShieldCheck, TrendingUp, Users } from 'lucide-react';
+import { BarChart3, BookOpen, Bot, Folder, History, LayoutGrid, ListChecks, MessageCircle, ShieldCheck, TrendingUp, Users } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -49,6 +49,16 @@ const adminNavItems: NavItem[] = [
         title: 'AI Providers',
         url: '/admin/ai/providers',
         icon: Bot,
+    },
+    {
+        title: 'Analytics',
+        url: '/admin/analytics',
+        icon: BarChart3,
+    },
+    {
+        title: 'Activity Log',
+        url: '/admin/activity-log',
+        icon: History,
     },
 ];
 

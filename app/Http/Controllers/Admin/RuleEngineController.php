@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\RuleEngineRule;
+use App\Services\Admin\ActivityLogger;
 use App\Services\RuleEngine\RuleEngineConditionEvaluator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -13,6 +14,8 @@ use Inertia\Response;
 
 class RuleEngineController extends Controller
 {
+    public function __construct(private ActivityLogger $activityLogger) {}
+
     public function index(Request $request): Response
     {
         $rules = RuleEngineRule::query()
@@ -32,7 +35,9 @@ class RuleEngineController extends Controller
     {
         $validated = $this->validated($request);
 
-        RuleEngineRule::create($validated);
+        $rule = RuleEngineRule::create($validated);
+
+        $this->activityLogger->log('rule_engine_rule.created', $rule, ['category' => $rule->category, 'name' => $rule->name]);
 
         return back();
     }
@@ -43,6 +48,8 @@ class RuleEngineController extends Controller
 
         $rule->update($validated);
 
+        $this->activityLogger->log('rule_engine_rule.updated', $rule, ['category' => $rule->category, 'name' => $rule->name]);
+
         return back();
     }
 
@@ -50,6 +57,8 @@ class RuleEngineController extends Controller
     {
         // Deactivate rather than hard-delete, per docs/05-API-Specification.md §11.
         $rule->update(['is_active' => false]);
+
+        $this->activityLogger->log('rule_engine_rule.deactivated', $rule, ['category' => $rule->category, 'name' => $rule->name]);
 
         return back();
     }

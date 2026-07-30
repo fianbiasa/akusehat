@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\AiProviderController;
+use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\CoachAssignmentController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\RuleEngineController;
@@ -40,5 +42,10 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::get('coach-members', [CoachAssignmentController::class, 'index'])->name('coach-members.index');
         Route::post('coach-members', [CoachAssignmentController::class, 'store'])->name('coach-members.store');
         Route::delete('coach-members/{member}', [CoachAssignmentController::class, 'destroy'])->name('coach-members.destroy');
+    });
+
+    Route::middleware('permission:analytics.view')->group(function () {
+        Route::get('analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
+        Route::get('activity-log', [ActivityLogController::class, 'index'])->name('activity-log.index');
     });
 });

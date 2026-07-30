@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\AiModel;
 use App\Models\AiProvider;
+use App\Services\Admin\ActivityLogger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -13,6 +14,8 @@ use Inertia\Response;
 
 class AiProviderController extends Controller
 {
+    public function __construct(private ActivityLogger $activityLogger) {}
+
     public function index(): Response
     {
         return Inertia::render('admin/ai-providers/index', [
@@ -31,7 +34,9 @@ class AiProviderController extends Controller
             'is_active' => ['boolean'],
         ]);
 
-        AiProvider::create($validated);
+        $provider = AiProvider::create($validated);
+
+        $this->activityLogger->log('ai_provider.created', $provider, $validated);
 
         return back();
     }
@@ -46,6 +51,8 @@ class AiProviderController extends Controller
         ]);
 
         $provider->update($validated);
+
+        $this->activityLogger->log('ai_provider.updated', $provider, $validated);
 
         return back();
     }
@@ -62,7 +69,9 @@ class AiProviderController extends Controller
             'is_active' => ['boolean'],
         ]);
 
-        $provider->models()->create($validated);
+        $model = $provider->models()->create($validated);
+
+        $this->activityLogger->log('ai_model.created', $model, $validated);
 
         return back();
     }
@@ -79,6 +88,8 @@ class AiProviderController extends Controller
         ]);
 
         $model->update($validated);
+
+        $this->activityLogger->log('ai_model.updated', $model, $validated);
 
         return back();
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
+use App\Services\Admin\ActivityLogger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -14,6 +15,8 @@ use Inertia\Response;
 
 class UserController extends Controller
 {
+    public function __construct(private ActivityLogger $activityLogger) {}
+
     public function index(Request $request): Response
     {
         $users = User::query()
@@ -57,6 +60,8 @@ class UserController extends Controller
             $user->coachProfile()->create([]);
         }
 
+        $this->activityLogger->log('user.created', $user, ['email' => $user->email, 'role_id' => $user->role_id]);
+
         return back();
     }
 
@@ -71,12 +76,16 @@ class UserController extends Controller
 
         $user->update($validated);
 
+        $this->activityLogger->log('user.updated', $user, $validated);
+
         return back();
     }
 
     public function destroy(User $user): RedirectResponse
     {
         abort_if($user->is(request()->user()), 422, 'You cannot delete your own account here.');
+
+        $this->activityLogger->log('user.deleted', $user, ['email' => $user->email]);
 
         $user->delete();
 

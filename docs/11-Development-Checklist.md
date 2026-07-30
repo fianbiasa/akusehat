@@ -152,19 +152,21 @@
 
 ## Phase 9 — Admin Panel
 
-- [ ] Analytics aggregation queries (active users, program completion, AI cost, health outcomes)
-- [ ] Admin dashboard React page ([wireframe/admin.md](../wireframe/admin.md))
-- [ ] Consolidate all Admin CRUD screens built in earlier phases into a coherent Admin shell/navigation
-- [ ] Admin activity audit log viewer (`activity_logs`)
-- [ ] Role-gated Admin route group + navigation
+- [x] Analytics aggregation queries (active users, program completion, AI cost, health outcomes) — `AnalyticsService`: Active Users = `status=active` with `last_login_at` in the last 30 days (login tracking added this phase via a `RecordLastLogin` listener on Laravel's built-in `Login` event, since `users.last_login_at` existed in the schema/model but was never actually written anywhere before now); Program Completion % = completed / total `user_programs`; Avg Health Score = average of each user's *latest* `health_scores.score` (portable `MAX(id)` per-user subquery, since ids are monotonic and a day's score is upserted in place); AI Cost (30d) + AI Cost by Provider = `ai_request_logs.estimated_cost` summed/grouped over the trailing 30 days.
+- [x] Admin dashboard React page ([wireframe/admin.md](../wireframe/admin.md)) — `/admin/analytics`, 4 stat cards + AI Cost by Provider bar breakdown, matching the wireframe's "Analytics Landing" layout.
+- [x] Consolidate all Admin CRUD screens built in earlier phases into a coherent Admin shell/navigation — Users/Roles/Rule Engine/AI Providers/Analytics/Activity Log now all listed together under one "Admin" sidebar section (`app-sidebar.tsx`).
+- [x] Admin activity audit log viewer (`activity_logs`) — table + `ActivityLog` model + `ActivityLogger` service pulled forward from Phase 10 (which had originally scoped this migration), since Phase 9's viewer needs it to exist; `ActivityLogger::log()` wired into every admin write action added so far (user create/update/delete, role permission sync, coach assign/unassign, AI provider/model create/update, rule engine rule create/update/deactivate). Member-facing write-through (program creation, plan override, recommendation approval) stays Phase 10 scope per the original plan.
+- [x] Role-gated Admin route group + navigation — both new routes gated by the already-seeded `analytics.view` permission (admin-only), reusing it for both screens rather than adding a redundant permission since they're both the same "observability" concern.
+- KB CRUD (foods/exercises/diseases/articles/FAQ editing), Admin Prompt Template editor, and a dedicated AI request-log viewer remain deferred — `wireframe/admin.md` and the PRD depict/require them, but they aren't listed as Phase 9 checklist bullets here; treating this checklist as the authoritative phase-scoping source (same precedent as every earlier phase), not the wireframe/PRD directly.
+- 294/294 tests passing.
 
 ## Phase 10 — Achievements & Notifications
 
-- [ ] Migrations: `achievements`, `user_achievements`, `activity_logs`
+- [ ] Migrations: `achievements`, `user_achievements` — `activity_logs` already created in Phase 9 (pulled forward for the Admin audit log viewer)
 - [ ] `EvaluateAchievementsJob` (daily scheduled, criteria matching against logs)
 - [ ] API: achievements catalog + earned achievements
 - [ ] React: achievement badges on Dashboard/Profile
-- [ ] `activity_logs` write-through in key services (program creation, plan override, recommendation approval)
+- [ ] `activity_logs` write-through in remaining member/coach-facing services (program creation, plan override, recommendation approval) — the Admin-side write-through (users, roles, coach assignment, AI provider, rule engine) is already done in Phase 9
 - [ ] Laravel Notification channels: in-app + email (push deferred to v1.1)
 
 ## Phase 11 — Subscription Scaffolding (schema + gating, no live gateway in v1)

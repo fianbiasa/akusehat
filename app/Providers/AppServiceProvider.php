@@ -11,10 +11,12 @@ use App\Listeners\FeedAIMemoryOnCheckIn;
 use App\Listeners\MapOnboardingAnswersToHealthProfile;
 use App\Listeners\NotifyCoachOfPendingRecommendation;
 use App\Listeners\NotifyUserProgramReady;
+use App\Listeners\RecordLastLogin;
 use App\Models\BodyMeasurement;
 use App\Models\LifestyleProfile;
 use App\Observers\BodyMeasurementObserver;
 use App\Observers\LifestyleProfileObserver;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -49,6 +51,7 @@ class AppServiceProvider extends ServiceProvider
         Event::listen(ProgramGenerated::class, NotifyUserProgramReady::class);
         Event::listen(CheckInSubmitted::class, FeedAIMemoryOnCheckIn::class);
         Event::listen(AIRecommendationCreated::class, NotifyCoachOfPendingRecommendation::class);
+        Event::listen(Login::class, RecordLastLogin::class);
 
         BodyMeasurement::observe(BodyMeasurementObserver::class);
         LifestyleProfile::observe(LifestyleProfileObserver::class);
