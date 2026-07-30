@@ -10,6 +10,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
+use Sentry\Laravel\Integration;
 
 return Application::configure(basePath: dirname(__DIR__))
     // Listener registration is explicit in AppServiceProvider (ordering
@@ -41,5 +42,9 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        // Inactive until SENTRY_LARAVEL_DSN is set (config/sentry.php
+        // defaults it to null) - Sentry's own SDK no-ops entirely without
+        // a DSN, so this is safe to leave wired in permanently rather
+        // than conditionally registering it.
+        Integration::handles($exceptions);
     })->create();
