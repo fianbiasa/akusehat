@@ -186,10 +186,13 @@
 
 ## Phase 12 — App Settings & Cross-Cutting
 
-- [ ] Migration: `app_settings`
-- [ ] Platform default AI provider/fallback order config
-- [ ] Maintenance-mode flag wiring
-- [ ] `app_settings` Admin editor
+- [x] Migration: `app_settings` — matches `mysql.sql` exactly: `key` unique, `value` json, `description`, `updated_at` only (no `created_at`).
+- [x] Platform default AI provider/fallback order config — resolves PRD §6.3's open business question ("bring-your-own-key OR platform provides a default shared provider/key"). `AppSettingsService::platformDefaultAiSetting()` builds an unsaved `UserAiSetting`-shaped object from `app_settings` key `ai.platform_default` (provider_id/model_id/temperature + an already-encrypted API key), reusing `UserAiSetting`'s own `decryptedApiKey()`/relations rather than inventing a parallel structure. `AIGatewayService::defaultSettings()` falls back to it only when a user has configured *zero* of their own providers — a user with even one personal provider never touches the shared key. Every AI call still logs to `ai_request_logs` under the real user's `user_id` even when using the shared key, so per-user usage against a metered shared key stays measurable.
+- [x] Maintenance-mode flag wiring — `EnsureNotInMaintenanceMode` middleware, appended globally to the `web` group (not scoped to specific routes, since maintenance mode by definition affects the whole app). Distinct from Laravel's built-in file-based `php artisan down` (which needs shell access an Admin operator doesn't have) — this is DB-backed and Admin-toggleable from `/admin/settings`. Admins always bypass it (so they can turn it back off), and `/login`/`/logout` always stay reachable so an Admin isn't locked out before authenticating. Custom `resources/views/errors/503.blade.php` shows the configured message on a clean standalone page (no Vite/React dependency, in case maintenance is genuinely needed because the frontend build is broken).
+- [x] `app_settings` Admin editor — `/admin/settings`: AI Provider Default card (provider/model select + API key + temperature, matching the member-facing AI settings form's UX) and Maintenance Mode card (toggle + message), gated by a new `app_settings.manage` permission, wired into `ActivityLogger`.
+- **Caught and fixed a brief self-inflicted production issue while smoke testing**: this server *is* the live site — code edits (like appending new middleware to the global `web` group in `bootstrap/app.php`) take effect on real traffic immediately, unlike every prior phase's new-route-only changes which were safe to leave unmigrated on the real DB until the end-of-phase smoke test. The `app_settings` migration hadn't been run against the real database yet when the global middleware started executing, so every request site-wide 500'd (`app_settings` table not found) for roughly a minute until caught by the routine pre-smoke-test health check and fixed by running the migration. See [[project-akusehat-infra]] — this generalizes: any future phase touching a globally-applied middleware/config must have its migration run the moment the code change lands, not deferred.
+- Maintenance mode was live-tested directly against production (enable → verify 503 for guests/login-reachable/admin-bypass → disable → re-verify 200), kept to the smallest possible time window, then fully cleaned up (including the `app_settings` rows themselves) so no smoke-test residue was left in the real database.
+- 364/364 tests passing.
 
 ## Phase 13 — PWA / Accessibility / Non-Functional Hardening
 

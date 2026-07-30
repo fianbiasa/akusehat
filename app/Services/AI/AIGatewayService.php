@@ -6,6 +6,7 @@ use App\Models\AiRecommendation;
 use App\Models\AiRequestLog;
 use App\Models\User;
 use App\Models\UserAiSetting;
+use App\Services\AppSettingsService;
 use App\Services\RuleEngine\RuleEngineService;
 use Illuminate\Support\Facades\Log;
 
@@ -23,6 +24,7 @@ class AIGatewayService
         private PromptBuilderService $promptBuilder,
         private AIResponseProcessor $responseProcessor,
         private RuleEngineService $ruleEngineService,
+        private AppSettingsService $appSettings,
     ) {}
 
     public function send(User $user, string $capability, string $templateKey, array $extra = []): array
@@ -93,10 +95,18 @@ class AIGatewayService
         return $result['data'];
     }
 
+    /**
+     * Falls back to the platform-wide default (Phase 12, resolving
+     * PRD §6.3's open "bring-your-own-key OR platform-provided shared
+     * key" question) only when the user has configured nothing of
+     * their own - a user with even one personal provider always uses
+     * that, never the shared key.
+     */
     private function defaultSettings(User $user): ?UserAiSetting
     {
         return $user->aiSettings()->where('is_default', true)->with(['provider', 'model'])->first()
-            ?? $user->aiSettings()->with(['provider', 'model'])->first();
+            ?? $user->aiSettings()->with(['provider', 'model'])->first()
+            ?? $this->appSettings->platformDefaultAiSetting();
     }
 
     private function secondarySettings(User $user, UserAiSetting $exclude): ?UserAiSetting

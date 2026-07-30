@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureNotInMaintenanceMode;
 use App\Http\Middleware\EnsureOnboardingCompleted;
 use App\Http\Middleware\EnsurePermission;
 use App\Http\Middleware\EnsureWithinProgramLimit;
@@ -24,6 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->web(append: [
+            EnsureNotInMaintenanceMode::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
         ]);

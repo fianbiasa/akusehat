@@ -15,6 +15,7 @@ import {
     LayoutGrid,
     ListChecks,
     MessageCircle,
+    Settings,
     ShieldCheck,
     TrendingUp,
     Users,
@@ -82,6 +83,11 @@ const adminNavItems: NavItem[] = [
         title: 'Subscriptions',
         url: '/admin/subscriptions',
         icon: CreditCard,
+    },
+    {
+        title: 'Platform Settings',
+        url: '/admin/settings',
+        icon: Settings,
     },
 ];
 

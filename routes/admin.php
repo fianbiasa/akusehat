@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\AiProviderController;
 use App\Http\Controllers\Admin\AnalyticsController;
+use App\Http\Controllers\Admin\AppSettingController;
 use App\Http\Controllers\Admin\CoachAssignmentController;
 use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\RoleController;
@@ -56,5 +57,11 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::post('plans', [PlanController::class, 'store'])->name('plans.store');
         Route::patch('plans/{plan}', [PlanController::class, 'update'])->name('plans.update');
         Route::get('subscriptions', [SubscriptionController::class, 'index'])->name('subscriptions.index');
+    });
+
+    Route::middleware('permission:app_settings.manage')->prefix('settings')->name('settings.')->group(function () {
+        Route::get('/', [AppSettingController::class, 'edit'])->name('edit');
+        Route::patch('ai-default', [AppSettingController::class, 'updateAiDefault'])->name('ai-default.update');
+        Route::patch('maintenance-mode', [AppSettingController::class, 'updateMaintenanceMode'])->name('maintenance-mode.update');
     });
 });
