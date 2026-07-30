@@ -5,6 +5,7 @@ namespace App\Services\AI;
 use App\Models\AiPromptTemplate;
 use App\Models\KbExercise;
 use App\Models\KbFood;
+use App\Models\ProgramGoal;
 use App\Models\User;
 use App\Services\RuleEngine\RuleEngineService;
 
@@ -54,10 +55,12 @@ class PromptBuilderService
             'kb_context' => $this->resolveKbContext($user),
             'ai_memory_context' => $this->resolveAiMemoryContext($user),
             'progress_snapshot' => $this->resolveProgressSnapshot($user),
-            // program_goal / pending_recommendations / conversation_history /
-            // member_message / plan_date depend on features not built yet
-            // (program_goals is Phase 6, conversations/messages is Phase 8) -
-            // callers pass these via $extra until then.
+            'program_goal' => $this->resolveProgramGoal($user),
+            'pending_recommendations' => $this->resolvePendingRecommendations($user),
+            // conversation_history / member_message depend on features not
+            // built yet (conversations/messages is Phase 8) - callers pass
+            // these via $extra until then. plan_date is inherently
+            // call-specific and always caller-supplied.
             default => 'Tidak ada data.',
         };
     }
@@ -124,5 +127,41 @@ class PromptBuilderService
         return [
             'recent_measurements' => $user->bodyMeasurements()->orderByDesc('measured_at')->limit(7)->get(['measured_at', 'weight_kg', 'waist_cm']),
         ];
+    }
+
+    /**
+     * The active program's most recent goal, if any - callers generating a
+     * plan for a specific UserProgram should still prefer passing
+     * 'program_goal' via $extra explicitly (a user can run multiple
+     * programs concurrently, per FR-PROG-01), this is only the fallback
+     * for capabilities not scoped to one program (e.g. onboarding_analysis).
+     */
+    private function resolveProgramGoal(User $user): array|string
+    {
+        $goal = ProgramGoal::whereIn('user_program_id', $user->programs()->where('status', 'active')->pluck('id'))
+            ->latest()
+            ->first();
+
+        if (! $goal) {
+            return 'Tidak ada data.';
+        }
+
+        return [
+            'goal_type' => $goal->goal_type,
+            'target_weight_kg' => $goal->target_weight_kg,
+            'target_waist_cm' => $goal->target_waist_cm,
+            'target_date' => $goal->target_date,
+            'notes' => $goal->notes,
+        ];
+    }
+
+    private function resolvePendingRecommendations(User $user): array
+    {
+        return $user->aiRecommendations()
+            ->where('status', 'pending')
+            ->latest()
+            ->limit(10)
+            ->get(['type', 'content', 'rationale'])
+            ->toArray();
     }
 }

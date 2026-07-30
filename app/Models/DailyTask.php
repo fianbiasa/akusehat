@@ -5,27 +5,26 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class AiMemory extends Model
+class DailyTask extends Model
 {
     protected $fillable = [
-        'user_id',
         'user_program_id',
-        'memory_type',
-        'summary',
-        'data',
-        'relevance_score',
+        'task_date',
+        'task_type',
+        'title',
+        'description',
+        'is_completed',
+        'completed_at',
+        'source',
     ];
 
     protected function casts(): array
     {
         return [
-            'data' => 'array',
+            'task_date' => 'date:Y-m-d',
+            'is_completed' => 'boolean',
+            'completed_at' => 'datetime',
         ];
-    }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
     }
 
     public function userProgram(): BelongsTo

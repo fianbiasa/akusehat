@@ -101,21 +101,22 @@
 
 ## Phase 6 — Program Generation
 
-- [ ] Migrations: `programs`, `user_programs`, `program_goals`, `weekly_plans`, `daily_tasks`, `meal_plans`, `meal_plan_items`, `workout_plans`, `workout_plan_items`, `checklist_items`, `reminders`
-- [ ] Seed: `programs` catalog (starting with "Diet & Transformasi 90 Hari")
-- [ ] `ProgramGenerationService`: Goal → RuleEngine → PromptBuilder → AIGateway → AIResponseProcessor → persist
-- [ ] `GenerateProgramJob` (queued), status-polling endpoint
-- [ ] `AIMemoryService`: scheduled trend/pattern/milestone/concern detection (`ScanAIMemoryJob`)
-- [ ] `RecommendationApplierService`: bounds-check against Rule Engine, auto-apply vs. queue for Coach approval
-- [ ] `GenerateWeeklyReviewJob` (scheduled per program's week boundary)
-- [ ] API: program catalog, user-programs CRUD, goals, weekly-plans, daily-tasks, meal-plans (+items), workout-plans (+items), checklist, reminders (§6 of [05-API-Specification.md](05-API-Specification.md))
-- [ ] `DispatchRemindersJob` (per-minute scheduler tick, timezone-aware)
-- [ ] React: Dashboard (today view) per [wireframe/dashboard.md](../wireframe/dashboard.md)
-- [ ] React: Program detail / weekly review detail views
-- [ ] React: multi-program switcher
-- [ ] Events: `ProgramGenerated`, `CheckInSubmitted`, `AIRecommendationCreated` + listeners
-- [ ] Feature test: full generation pipeline produces schema-valid, persisted plan
-- [ ] Feature test: auto-apply vs. pending-approval branching for a boundary-testing recommendation
+- [x] Migrations: `programs`, `user_programs`, `program_goals`, `weekly_plans`, `daily_tasks`, `meal_plans`, `meal_plan_items`, `workout_plans`, `workout_plan_items`, `checklist_items`, `reminders` — plus the stock `notifications` table (database channel, for the dashboard's 🔔 bell) and a follow-up migration adding the `ai_memories`/`ai_recommendations.user_program_id` FKs that Phase 5 deliberately deferred until this table existed. `weekly_plans` also gains a `viewed_at` column not in `mysql.sql`, needed for wireframe/dashboard.md's "only appears until viewed" behavior — additive/nullable, documented deviation.
+- [x] Seed: `programs` catalog (just "Diet & Transformasi 90 Hari", per scope)
+- [x] `ProgramGenerationService`: Goal → RuleEngine → PromptBuilder → AIGateway → AIResponseProcessor → persist — generates **one day at a time** (today, on program creation; any date via `/regenerate`), not a 90-day batch upfront. Reusing Phase 5's `meal_plan`/`workout_plan` templates (already scoped per-day) via the `generatePlan` capability, rather than a new combined "full plan" template — avoids 180+ AI calls per program and a much larger single-response schema-validation surface. Falls back to a deterministic Rule-Engine-only plan (KB foods/exercises picked directly, no AI) when no provider is configured or all fail, exactly like every other AI capability in this app.
+- [x] `GenerateProgramJob` (queued), status-polling endpoint (`GET /user-programs/{id}/generate/status`, backed by a short-TTL cache entry, not a schema column — `user_programs` has no place reserved for ephemeral job status)
+- [x] `AIMemoryService`: deterministic (not ML) trend/pattern/milestone/concern heuristics from checklist completion + weight history; `ScanAIMemoryJob` scheduled daily, also invoked incrementally by `CheckInSubmitted`. `PruneAIMemoryRelevanceJob` (weekly relevance decay) added too.
+- [x] `RecommendationApplierService`: only `habit`/`motivation` adjustments ever auto-apply, even when the AI marks `meal_adjustment`/`workout_adjustment` as `auto_applicable` — the AI's adjustment `detail` is free text, not a structured delta, so there is no sound way to bounds-check a mutation to `meal_plan_items`/`workout_plan_items` against it. Structural adjustments always route to Coach approval; a fabricated text-parsing heuristic would be worse than this conservative rule. Documented in the service's docblock.
+- [x] `GenerateWeeklyReviewJob` — dispatched by a daily scheduler tick that finds `weekly_plans` rows whose week just ended and haven't been reviewed yet ("per program's week boundary" is user-relative, not a shared calendar day, so there's no single fixed cron time for it)
+- [x] API: program catalog, user-programs CRUD, goals, weekly-plans, daily-tasks, meal-plans (+items), workout-plans (+items), checklist, reminders (§6 of [05-API-Specification.md](05-API-Specification.md)) — plain web routes under `auth`+`onboarding.completed`, matching every prior phase's convention (no separate `/api/v1` namespace yet)
+- [x] `DispatchRemindersJob` (per-minute scheduler tick, timezone-aware via `users.timezone`, `last_sent_at` as the same-day dedup guard)
+- [x] React: Dashboard (today view) per [wireframe/dashboard.md](../wireframe/dashboard.md) — Health Score card omitted (Phase 7, `health_scores` doesn't exist yet); weight is shown as the latest logged value, full trend chart is also Phase 7
+- [x] React: Program detail / weekly review detail views
+- [x] React: multi-program switcher (segmented buttons, shown when >1 active program)
+- [x] Events: `ProgramGenerated`, `CheckInSubmitted`, `AIRecommendationCreated` + listeners — the coach-notification listener checks `user_programs.coach_id` (which exists now) and safely no-ops until Phase 8 builds actual coach assignment
+- [x] Feature test: full generation pipeline produces schema-valid, persisted plan (both the AI-success path with KB item matching, and the Rule-Engine-only fallback path)
+- [x] Feature test: auto-apply vs. pending-approval branching for a boundary-testing recommendation
+- Two pre-existing bugs (Phase 3, not Phase 6) caught by live HTTP smoke testing, not the in-process suite: (1) `HealthProfileService`'s BMI/BMR/TDEE calculation has no input sanity bounds, so an unrealistic height/weight (e.g. a typo) produces a BMI that overflows `health_profiles.bmi`'s `DECIMAL(5,2)` and crashes onboarding completion with a raw SQL error under MySQL's strict mode — invisible against the test suite's SQLite, which doesn't enforce DECIMAL range. (2) `OnboardingController::answer()` never validated that a "repeatable" question (medications/allergies) actually receives an array, so a non-array value crashed `MapOnboardingAnswersToHealthProfile::mapRepeatable()` with a `TypeError` instead of a clean 422. Both fixed with boundary validation (min/max on `onboarding_questions.validation_rules` for steps 6-10, an `array` rule for repeatable questions), each with a regression test.
 
 ## Phase 7 — Progress Tracking & Health Score
 

@@ -3,7 +3,7 @@
 namespace Tests\Feature\Onboarding;
 
 use App\Events\OnboardingCompleted;
-use App\Jobs\GenerateInitialProgram;
+use App\Jobs\GenerateProgramJob;
 use App\Models\OnboardingQuestion;
 use App\Models\OnboardingSession;
 use App\Models\User;
@@ -62,6 +62,38 @@ class OnboardingWizardTest extends TestCase
         $this->assertCount(1, $resumed['answers']);
     }
 
+    public function test_an_unrealistic_height_is_rejected_instead_of_crashing_bmi_calculation_later()
+    {
+        $user = User::factory()->create();
+        $session = $user->onboardingSessions()->create(['status' => 'in_progress', 'current_step' => 1, 'started_at' => now()]);
+        $question = OnboardingQuestion::where('step', 6)->firstOrFail(); // height_cm
+
+        $this->actingAs($user)
+            ->postJson("/onboarding/sessions/{$session->id}/answers", ['question_id' => $question->id, 'value' => 10])
+            ->assertUnprocessable();
+
+        $this->assertDatabaseMissing('onboarding_answers', [
+            'onboarding_session_id' => $session->id,
+            'question_id' => $question->id,
+        ]);
+    }
+
+    public function test_a_non_array_value_for_a_repeatable_question_is_rejected_instead_of_crashing_later()
+    {
+        $user = User::factory()->create();
+        $session = $user->onboardingSessions()->create(['status' => 'in_progress', 'current_step' => 1, 'started_at' => now()]);
+        $question = OnboardingQuestion::where('step', 25)->firstOrFail(); // repeatable medications list
+
+        $this->actingAs($user)
+            ->postJson("/onboarding/sessions/{$session->id}/answers", ['question_id' => $question->id, 'value' => 'Paracetamol'])
+            ->assertUnprocessable();
+
+        $this->assertDatabaseMissing('onboarding_answers', [
+            'onboarding_session_id' => $session->id,
+            'question_id' => $question->id,
+        ]);
+    }
+
     public function test_completing_the_wizard_requires_every_required_question_answered()
     {
         $user = User::factory()->create();
@@ -99,7 +131,7 @@ class OnboardingWizardTest extends TestCase
         Event::assertDispatched(OnboardingCompleted::class, fn ($event) => $event->session->is($session));
     }
 
-    public function test_the_dispatched_listener_queues_generate_initial_program()
+    public function test_the_dispatched_listener_bootstraps_a_program_and_queues_generation()
     {
         Bus::fake();
 
@@ -116,7 +148,8 @@ class OnboardingWizardTest extends TestCase
 
         $this->actingAs($user)->postJson("/onboarding/sessions/{$session->id}/complete")->assertOk();
 
-        Bus::assertDispatched(GenerateInitialProgram::class, fn ($job) => $job->session->is($session));
+        $this->assertDatabaseHas('user_programs', ['user_id' => $user->id, 'status' => 'active']);
+        Bus::assertDispatched(GenerateProgramJob::class, fn ($job) => $job->userProgram->user_id === $user->id);
     }
 
     public function test_a_user_cannot_answer_into_another_users_session()

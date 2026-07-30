@@ -35,4 +35,9 @@ class AiRecommendation extends Model
     {
         return $this->belongsTo(User::class, 'reviewed_by');
     }
+
+    public function userProgram(): BelongsTo
+    {
+        return $this->belongsTo(UserProgram::class);
+    }
 }

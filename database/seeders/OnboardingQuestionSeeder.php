@@ -25,12 +25,17 @@ class OnboardingQuestionSeeder extends Seeder
             ['identity', 'Berapa nomor HP kamu?', 'text', null, false],
             ['identity', 'Bahasa yang kamu inginkan untuk aplikasi ini?', 'single_choice', ['Bahasa Indonesia', 'English'], true],
 
-            // Body
-            ['body', 'Berapa tinggi badan kamu? (cm)', 'number', null, true],
-            ['body', 'Berapa berat badan kamu sekarang? (kg)', 'number', null, true],
-            ['body', 'Berapa lingkar pinggang kamu? (cm)', 'number', null, true],
-            ['body', 'Berapa target berat badan kamu? (kg)', 'number', null, true],
-            ['body', 'Dalam berapa minggu kamu ingin mencapai target itu?', 'number', null, true],
+            // Body - min/max bounds here aren't just UX polish: an
+            // unrealistic height (e.g. "10" instead of "170") produces a
+            // BMI that overflows health_profiles.bmi's DECIMAL(5,2) and
+            // crashes onboarding completion with a raw SQL error, caught
+            // via live smoke testing - see docs/11-Development-Checklist.md
+            // Phase 6 notes.
+            ['body', 'Berapa tinggi badan kamu? (cm)', 'number', null, true, ['min' => 50, 'max' => 250]],
+            ['body', 'Berapa berat badan kamu sekarang? (kg)', 'number', null, true, ['min' => 20, 'max' => 300]],
+            ['body', 'Berapa lingkar pinggang kamu? (cm)', 'number', null, true, ['min' => 30, 'max' => 200]],
+            ['body', 'Berapa target berat badan kamu? (kg)', 'number', null, true, ['min' => 20, 'max' => 300]],
+            ['body', 'Dalam berapa minggu kamu ingin mencapai target itu?', 'number', null, true, ['min' => 1, 'max' => 104]],
 
             // Lifestyle
             ['lifestyle', 'Seberapa aktif kegiatan harianmu?', 'single_choice', ['Duduk terus', 'Ringan', 'Sedang', 'Berat'], true],

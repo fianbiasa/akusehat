@@ -72,6 +72,28 @@ class OnboardingController extends Controller
 
         $question = OnboardingQuestion::findOrFail($validated['question_id']);
 
+        // Sanity bounds for numeric health inputs (height/weight/waist/
+        // target weight/timeframe) - an out-of-range value here (e.g. a
+        // mistyped height) would otherwise reach health_profiles and
+        // produce a BMI/BMR/TDEE that overflows those DECIMAL columns,
+        // crashing onboarding completion instead of failing this one
+        // answer with a clear validation error.
+        if ($question->input_type === 'number' && isset($question->validation_rules['min'], $question->validation_rules['max'])) {
+            $request->validate([
+                'value' => ['numeric', 'min:'.$question->validation_rules['min'], 'max:'.$question->validation_rules['max']],
+            ]);
+        }
+
+        // A repeatable question (medications/allergies) feeds
+        // MapOnboardingAnswersToHealthProfile::mapRepeatable(), which
+        // expects an array of rows - a non-array value here would
+        // otherwise crash that listener with a TypeError at onboarding
+        // completion instead of failing this one answer with a clear
+        // validation error.
+        if ($question->validation_rules['repeatable'] ?? false) {
+            $request->validate(['value' => ['array']]);
+        }
+
         $answer = OnboardingAnswer::updateOrCreate(
             ['onboarding_session_id' => $session->id, 'question_id' => $question->id],
             ['answer_value' => $validated['value'], 'answered_at' => now()],

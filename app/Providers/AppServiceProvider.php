@@ -2,9 +2,15 @@
 
 namespace App\Providers;
 
+use App\Events\AIRecommendationCreated;
+use App\Events\CheckInSubmitted;
 use App\Events\OnboardingCompleted;
+use App\Events\ProgramGenerated;
 use App\Listeners\DispatchInitialProgramGeneration;
+use App\Listeners\FeedAIMemoryOnCheckIn;
 use App\Listeners\MapOnboardingAnswersToHealthProfile;
+use App\Listeners\NotifyCoachOfPendingRecommendation;
+use App\Listeners\NotifyUserProgramReady;
 use App\Models\BodyMeasurement;
 use App\Models\LifestyleProfile;
 use App\Observers\BodyMeasurementObserver;
@@ -39,6 +45,10 @@ class AppServiceProvider extends ServiceProvider
         // dispatched, since the (future) Rule Engine will read from it.
         Event::listen(OnboardingCompleted::class, MapOnboardingAnswersToHealthProfile::class);
         Event::listen(OnboardingCompleted::class, DispatchInitialProgramGeneration::class);
+
+        Event::listen(ProgramGenerated::class, NotifyUserProgramReady::class);
+        Event::listen(CheckInSubmitted::class, FeedAIMemoryOnCheckIn::class);
+        Event::listen(AIRecommendationCreated::class, NotifyCoachOfPendingRecommendation::class);
 
         BodyMeasurement::observe(BodyMeasurementObserver::class);
         LifestyleProfile::observe(LifestyleProfileObserver::class);

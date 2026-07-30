@@ -124,4 +124,19 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(AiRecommendation::class);
     }
+
+    public function programs(): HasMany
+    {
+        return $this->hasMany(UserProgram::class);
+    }
+
+    public function activePrograms(): HasMany
+    {
+        return $this->programs()->where('status', 'active');
+    }
+
+    public function reminders(): HasMany
+    {
+        return $this->hasMany(Reminder::class);
+    }
 }
