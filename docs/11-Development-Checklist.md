@@ -47,7 +47,7 @@
 - [x] React: input components per `input_type` (text/number/date/single_choice/multi_choice/time/scale)
 - [x] React: repeatable-row components (medications, allergies) — driven by `onboarding_questions.validation_rules.repeatable`
 - [x] `OnboardingCompleted` event + listener dispatching `GenerateInitialProgram` job — job is a logging stub until the Rule Engine/AI Provider layer (Phases 4-6) exists
-- [ ] Admin: question bank CRUD (create/edit/reorder/deactivate) + React pages
+- [x] Admin: question bank CRUD (create/edit/reorder/deactivate) + React pages — deferred at the time (Phase 2's checklist bullets didn't list it), built out later ([11-Development-Checklist.md](11-Development-Checklist.md) re-audit pass). `Admin\OnboardingQuestionController` at `/admin/onboarding-questions`, gated by a new `onboarding_questions.manage` permission. Reorder swaps `step`/`order` together since `OnboardingQuestionSeeder` always kept them as the same incrementing sequence number, not two independent concepts. "Deactivate" is a toggle (reactivatable), matching the Rule Engine's own soft-deactivate precedent rather than a hard delete.
 - [x] Feature test: full wizard completion → event fired → job dispatched
 - [x] Feature test: resume after partial completion
 
