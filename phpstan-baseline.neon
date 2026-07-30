@@ -1,0 +1,967 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Parameter \#1 \$condition of method App\\Services\\RuleEngine\\RuleEngineConditionEvaluator\:\:evaluate\(\) expects array\<string, mixed\>, string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/Admin/RuleEngineController.php
+
+		-
+			message: '#^Parameter \#1 \$provider of method App\\Services\\AI\\AIProviderFactory\:\:make\(\) expects App\\Models\\AiProvider, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AiSettingsController.php
+
+		-
+			message: '#^Parameter \#2 \$model of method App\\Services\\AI\\AIProviderFactory\:\:make\(\) expects App\\Models\\AiModel, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AiSettingsController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$max_members\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Coach/CoachDashboardController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$program\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Coach/CoachDashboardController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$score\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/Coach/CoachDashboardController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$scored_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Coach/CoachDashboardController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$summary\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Coach/CoachDashboardController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>max_members" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Controllers/Coach/CoachDashboardController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>summary" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Controllers/Coach/CoachDashboardController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$activity_level\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Coach/CoachMemberController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$bmi\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Coach/CoachMemberController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$content\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Coach/CoachMemberController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$date_of_birth\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Coach/CoachMemberController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/Coach/CoachMemberController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$program\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Coach/CoachMemberController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$rationale\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Coach/CoachMemberController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Coach/CoachMemberController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/Coach/CoachMemberController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>summary" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Controllers/Coach/CoachMemberController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$end_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/DashboardController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Http/Controllers/DashboardController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$logged_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/DashboardController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$program\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/DashboardController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$score\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/DashboardController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$scored_at\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/DashboardController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$start_date\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/DashboardController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$weight_kg\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/DashboardController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:checklistItems\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/DashboardController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:weeklyPlans\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/DashboardController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/DashboardController.php
+
+		-
+			message: '#^Parameter \#1 \$export of job class App\\Jobs\\ExportUserDataJob constructor expects App\\Models\\DataExport in App\\Jobs\\ExportUserDataJob\:\:dispatch\(\), Illuminate\\Database\\Eloquent\\Model given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/DataExportController.php
+
+		-
+			message: '#^Parameter \#1 \$column of method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\KbFood\>\:\:where\(\) expects array\<int\|string, mixed\>\|\(Closure\(Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\KbFood\>\)\: Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\KbFood\>\)\|\(Closure\(Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\KbFood\>\)\: void\)\|Illuminate\\Contracts\\Database\\Query\\Expression\|string, Closure\(mixed\)\: Illuminate\\Support\\Collection\<int\|string, mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/KbController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$content\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Controllers/MessageController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$sender_type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/MessageController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/MessageController.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Services\\AI\\AIGatewayService\:\:send\(\) expects App\\Models\\User, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/MessageController.php
+
+		-
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
+			count: 1
+			path: app/Http/Controllers/OnboardingController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\OnboardingController\:\:resumableSession\(\) should return App\\Models\\OnboardingSession but returns Illuminate\\Database\\Eloquent\\Model\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Controllers/OnboardingController.php
+
+		-
+			message: '#^Offset ''max'' on string\|null in isset\(\) does not exist\.$#'
+			identifier: isset.offset
+			count: 1
+			path: app/Http/Controllers/OnboardingController.php
+
+		-
+			message: '#^Offset ''min'' on string\|null in isset\(\) does not exist\.$#'
+			identifier: isset.offset
+			count: 1
+			path: app/Http/Controllers/OnboardingController.php
+
+		-
+			message: '#^Offset ''repeatable'' on string\|null on left side of \?\? does not exist\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: app/Http/Controllers/OnboardingController.php
+
+		-
+			message: '#^Result of && is always false\.$#'
+			identifier: booleanAnd.alwaysFalse
+			count: 1
+			path: app/Http/Controllers/OnboardingController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$user_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Programs/ChecklistItemController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$user_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Programs/DailyTaskController.php
+
+		-
+			message: '#^Parameter \#2 \$userProgram of method App\\Http\\Controllers\\Programs\\MealPlanController\:\:canManage\(\) expects App\\Models\\UserProgram, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/Programs/MealPlanController.php
+
+		-
+			message: '#^Parameter \#2 \$userProgram of method App\\Http\\Controllers\\Programs\\MealPlanController\:\:canView\(\) expects App\\Models\\UserProgram, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/Programs/MealPlanController.php
+
+		-
+			message: '#^Parameter \#1 \$userProgram of job class App\\Jobs\\GenerateProgramJob constructor expects App\\Models\\UserProgram in App\\Jobs\\GenerateProgramJob\:\:dispatch\(\), Illuminate\\Database\\Eloquent\\Model given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/Programs/UserProgramController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$ai_review\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Programs/WeeklyPlanController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$viewed_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Programs/WeeklyPlanController.php
+
+		-
+			message: '#^Parameter \#2 \$userProgram of method App\\Http\\Controllers\\Programs\\WorkoutPlanController\:\:canManage\(\) expects App\\Models\\UserProgram, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/Programs/WorkoutPlanController.php
+
+		-
+			message: '#^Parameter \#2 \$userProgram of method App\\Http\\Controllers\\Programs\\WorkoutPlanController\:\:canView\(\) expects App\\Models\\UserProgram, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/Programs/WorkoutPlanController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$logged_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Progress/ProgressPageController.php
+
+		-
+			message: '#^Cannot call method toDateString\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/Progress/ProgressPageController.php
+
+		-
+			message: '#^Cannot call method toDateString\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/Progress/ProgressPhotoController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: app/Http/Controllers/Progress/ProgressPhotoController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) expects callable\(Illuminate\\Database\\Eloquent\\Model, int\)\: array\{id\: int, logged_at\: mixed, angle\: ''back''\|''front''\|''side'', is_private\: bool, url\: string\}, Closure\(App\\Models\\ProgressPhoto\)\: array\{id\: int, logged_at\: mixed, angle\: ''back''\|''front''\|''side'', is_private\: bool, url\: string\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/Progress/ProgressPhotoController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$logged_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Progress/WaterIntakeLogController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$max_programs\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/SubscriptionController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$price\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/SubscriptionController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$permissions\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Middleware/HandleInertiaRequests.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\UserResource\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/UserResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\UserResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/UserResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\UserResource\:\:\$locale\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/UserResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\UserResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/UserResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\UserResource\:\:\$onboarding_completed_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/UserResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\UserResource\:\:\$role\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Http/Resources/UserResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\UserResource\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/UserResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\UserResource\:\:\$timezone\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/UserResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$timezone\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Jobs/DispatchRemindersJob.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:notify\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Jobs/DispatchRemindersJob.php
+
+		-
+			message: '#^Parameter \#2 \$criteria of method App\\Services\\Achievements\\AchievementCriteriaEvaluator\:\:matches\(\) expects array, string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Jobs/EvaluateAchievementsJob.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:notify\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Jobs/ExportUserDataJob.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Services\\UserDataExportService\:\:export\(\) expects App\\Models\\User, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Jobs/ExportUserDataJob.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$user\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Jobs/GenerateWeeklyReviewJob.php
+
+		-
+			message: '#^Cannot call method toDateString\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Jobs/GenerateWeeklyReviewJob.php
+
+		-
+			message: '#^Parameter \#1 \$userProgram of method App\\Services\\Program\\RecommendationApplierService\:\:applyAdjustments\(\) expects App\\Models\\UserProgram, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Jobs/GenerateWeeklyReviewJob.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:notify\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: app/Jobs/SubscriptionRenewalCheckJob.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Services\\Subscription\\SubscriptionService\:\:assignDefaultPlan\(\) expects App\\Models\\User, Illuminate\\Contracts\\Auth\\Authenticatable given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Listeners/AssignDefaultPlan.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$answer_value\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Listeners/MapOnboardingAnswersToHealthProfile.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$step\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Listeners/MapOnboardingAnswersToHealthProfile.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:allergies\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Listeners/MapOnboardingAnswersToHealthProfile.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:bodyMeasurements\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: app/Listeners/MapOnboardingAnswersToHealthProfile.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:healthProfile\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Listeners/MapOnboardingAnswersToHealthProfile.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:lifestyleProfile\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Listeners/MapOnboardingAnswersToHealthProfile.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:medications\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Listeners/MapOnboardingAnswersToHealthProfile.php
+
+		-
+			message: '#^Parameter \#1 \$keyBy of method Illuminate\\Support\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:keyBy\(\) expects \(callable\(Illuminate\\Database\\Eloquent\\Model, int\)\: \(int\|string\)\)\|list\<Closure\|string\>\|string, Closure\(App\\Models\\OnboardingAnswer\)\: mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Listeners/MapOnboardingAnswersToHealthProfile.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Listeners\\MapOnboardingAnswersToHealthProfile\:\:mapDiseases\(\) expects App\\Models\\User, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Listeners/MapOnboardingAnswersToHealthProfile.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Services\\HealthProfileService\:\:recalculate\(\) expects App\\Models\\User, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Listeners/MapOnboardingAnswersToHealthProfile.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$coach\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Listeners/NotifyCoachOfPendingRecommendation.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:notify\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Listeners/NotifyUserProgramReady.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$initial_weight_kg\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:permissions\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Notifications/SubscriptionExpired.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Notifications/SubscriptionExpiringSoon.php
+
+		-
+			message: '#^Cannot call method toDateString\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Notifications/SubscriptionExpiringSoon.php
+
+		-
+			message: '#^Cannot call method translatedFormat\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Notifications/SubscriptionExpiringSoon.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Services\\HealthProfileService\:\:recalculate\(\) expects App\\Models\\User, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Observers/BodyMeasurementObserver.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Services\\HealthProfileService\:\:recalculate\(\) expects App\\Models\\User, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Observers/LifestyleProfileObserver.php
+
+		-
+			message: '#^Method App\\Services\\AI\\AIGatewayService\:\:defaultSettings\(\) should return App\\Models\\UserAiSetting\|null but returns Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/AI/AIGatewayService.php
+
+		-
+			message: '#^Method App\\Services\\AI\\AIGatewayService\:\:secondarySettings\(\) should return App\\Models\\UserAiSetting\|null but returns Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/AI/AIGatewayService.php
+
+		-
+			message: '#^Parameter \#1 \$provider of method App\\Services\\AI\\AIProviderFactory\:\:make\(\) expects App\\Models\\AiProvider, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/AI/AIGatewayService.php
+
+		-
+			message: '#^Parameter \#2 \$model of method App\\Services\\AI\\AIProviderFactory\:\:make\(\) expects App\\Models\\AiModel, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/AI/AIGatewayService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$activity_level\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/AI/PromptBuilderService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$date_of_birth\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/AI/PromptBuilderService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$gender\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/AI/PromptBuilderService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$height_cm\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/AI/PromptBuilderService.php
+
+		-
+			message: '#^Method App\\Services\\AI\\PromptBuilderService\:\:build\(\) should return array\{prompt\: string, response_schema\: array, template_key\: string, template_version\: int\} but returns array\{prompt\: string, response_schema\: string, template_key\: string, template_version\: int\<0, max\>\}\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/AI/PromptBuilderService.php
+
+		-
+			message: '#^Only iterables can be unpacked, string given\.$#'
+			identifier: arrayUnpacking.nonIterable
+			count: 1
+			path: app/Services/AI/PromptBuilderService.php
+
+		-
+			message: '#^Parameter \#1 \$items of method Illuminate\\Support\\Collection\<int,string\>\:\:intersect\(\) expects Illuminate\\Contracts\\Support\\Arrayable\<0, string\>\|iterable\<0, string\>, Illuminate\\Support\\Collection\<int, mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/AI/PromptBuilderService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$initial_weight_kg\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Achievements/AchievementCriteriaEvaluator.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\AiRequestLog\:\:\$cost\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/Admin/AnalyticsService.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>value" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Services/AppSettingsService.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:notify\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: app/Services/Coach/CoachRecommendationService.php
+
+		-
+			message: '#^Only iterables can be unpacked, string given\.$#'
+			identifier: arrayUnpacking.nonIterable
+			count: 1
+			path: app/Services/Coach/CoachRecommendationService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$activity_level\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/HealthProfileService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$date_of_birth\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/HealthProfileService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$gender\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/HealthProfileService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$height_cm\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/HealthProfileService.php
+
+		-
+			message: '#^Method App\\Services\\HealthProfileService\:\:recalculate\(\) should return App\\Models\\HealthProfile\|null but returns Illuminate\\Database\\Eloquent\\Model\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/HealthProfileService.php
+
+		-
+			message: '#^Method App\\Services\\HealthProfileService\:\:recalculate\(\) should return App\\Models\\HealthProfile\|null but returns Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: return.type
+			count: 2
+			path: app/Services/HealthProfileService.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>activity_level" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Services/HealthProfileService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$bmi\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/HealthScoreService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$gender\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/HealthScoreService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$logged_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/HealthScoreService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$weight_kg\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/HealthScoreService.php
+
+		-
+			message: '#^Offset ''restrictions'' on array\{calorie_target\: int, macro_split\: array\{protein_pct\: int, carbs_pct\: int, fat_pct\: int\}, workout_level\: string, water_target_ml\: int, restrictions\: array\<int, string\>\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: app/Services/HealthScoreService.php
+
+		-
+			message: '#^Offset ''water_target_ml'' on array\{calorie_target\: int, macro_split\: array\{protein_pct\: int, carbs_pct\: int, fat_pct\: int\}, workout_level\: string, water_target_ml\: int, restrictions\: array\<int, string\>\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: app/Services/HealthScoreService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$item_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Program/AIMemoryService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$label\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/Program/AIMemoryService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$weight_kg\.$#'
+			identifier: property.notFound
+			count: 4
+			path: app/Services/Program/AIMemoryService.php
+
+		-
+			message: '#^Parameter \#2 \$userProgram of method App\\Services\\Program\\AIMemoryService\:\:detectChecklistConcern\(\) expects App\\Models\\UserProgram, Illuminate\\Database\\Eloquent\\Model given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/Program/AIMemoryService.php
+
+		-
+			message: '#^Parameter \#2 \$userProgram of method App\\Services\\Program\\AIMemoryService\:\:detectChecklistMilestone\(\) expects App\\Models\\UserProgram, Illuminate\\Database\\Eloquent\\Model given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/Program/AIMemoryService.php
+
+		-
+			message: '#^Parameter \#2 \$userProgram of method App\\Services\\Program\\AIMemoryService\:\:detectWorkoutPattern\(\) expects App\\Models\\UserProgram, Illuminate\\Database\\Eloquent\\Model given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/Program/AIMemoryService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$answer_value\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Program/ProgramGenerationService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$initial_weight_kg\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Program/ProgramGenerationService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$question\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Program/ProgramGenerationService.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:items\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: app/Services/Program/ProgramGenerationService.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:programs\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Services/Program/ProgramGenerationService.php
+
+		-
+			message: '#^Method App\\Services\\Program\\ProgramGenerationService\:\:ensureWeeklyPlan\(\) should return App\\Models\\WeeklyPlan but returns Illuminate\\Database\\Eloquent\\Model\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/Program/ProgramGenerationService.php
+
+		-
+			message: '#^Parameter \#1 \$array \(non\-empty\-list\<non\-falsy\-string\>\) to function array_filter does not contain falsy values, the array will always stay the same\.$#'
+			identifier: arrayFilter.same
+			count: 1
+			path: app/Services/Program/ProgramGenerationService.php
+
+		-
+			message: '#^Parameter \#1 \$items of method Illuminate\\Support\\Collection\<int,string\>\:\:intersect\(\) expects Illuminate\\Contracts\\Support\\Arrayable\<0, string\>\|iterable\<0, string\>, Illuminate\\Support\\Collection\<int, mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/Program/ProgramGenerationService.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Services\\AI\\AIGatewayService\:\:send\(\) expects App\\Models\\User, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Services/Program/ProgramGenerationService.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Services\\Program\\ProgramGenerationService\:\:createGoal\(\) expects App\\Models\\User, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/Program/ProgramGenerationService.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Services\\Program\\ProgramGenerationService\:\:createReminders\(\) expects App\\Models\\User, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/Program/ProgramGenerationService.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Services\\RuleEngine\\RuleEngineService\:\:evaluate\(\) expects App\\Models\\User, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/Program/ProgramGenerationService.php
+
+		-
+			message: '#^Parameter \#2 \$user of method App\\Services\\Program\\ProgramGenerationService\:\:fallbackWorkoutPlan\(\) expects App\\Models\\User, Illuminate\\Database\\Eloquent\\Model\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/Program/ProgramGenerationService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$activity_level\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/RuleEngine/RuleEngineService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$bmi\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/RuleEngine/RuleEngineService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$date_of_birth\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/RuleEngine/RuleEngineService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$gender\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/RuleEngine/RuleEngineService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$tdee\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/RuleEngine/RuleEngineService.php
+
+		-
+			message: '#^Only iterables can be unpacked, string given\.$#'
+			identifier: arrayUnpacking.nonIterable
+			count: 1
+			path: app/Services/RuleEngine/RuleEngineService.php
+
+		-
+			message: '#^Parameter \#1 \$condition of method App\\Services\\RuleEngine\\RuleEngineConditionEvaluator\:\:evaluate\(\) expects array\<string, mixed\>, string given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Services/RuleEngine/RuleEngineService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$has_coach_access\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Subscription/SubscriptionService.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$max_programs\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/Subscription/SubscriptionService.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:payments\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Services/Subscription/SubscriptionService.php
+
+		-
+			message: '#^Method App\\Services\\Subscription\\SubscriptionService\:\:assignDefaultPlan\(\) should return App\\Models\\Subscription but returns Illuminate\\Database\\Eloquent\\Model\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/Subscription/SubscriptionService.php
+
+		-
+			message: '#^Method App\\Services\\Subscription\\SubscriptionService\:\:currentSubscription\(\) should return App\\Models\\Subscription but returns Illuminate\\Database\\Eloquent\\Model\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/Subscription/SubscriptionService.php
+
+		-
+			message: '#^Method App\\Services\\Subscription\\SubscriptionService\:\:subscribe\(\) should return App\\Models\\Subscription but returns Illuminate\\Database\\Eloquent\\Model\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/Subscription/SubscriptionService.php

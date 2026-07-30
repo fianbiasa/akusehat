@@ -32,11 +32,26 @@ jobs:
       - name: Run Pint
         run: vendor/bin/pint
 
+      - name: Static Analysis (PHPStan/Larastan)
+        run: vendor/bin/phpstan analyse --memory-limit=512M
+
       - name: Format Frontend
         run: npm run format
 
       - name: Lint Frontend
         run: npm run lint
+
+      # Non-blocking: composer audit's network dependency and the known
+      # ESLint-devDependency-chain advisories (see docs/13-Security-Audit.md)
+      # mean these should be visible in CI logs without failing the build
+      # over a devDependency issue that never ships to production.
+      - name: Dependency Audit (composer)
+        run: composer audit
+        continue-on-error: true
+
+      - name: Dependency Audit (npm)
+        run: npm audit
+        continue-on-error: true
 
       # - name: Commit Changes
       #   uses: stefanzweifel/git-auto-commit-action@v5

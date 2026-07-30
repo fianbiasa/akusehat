@@ -17,7 +17,7 @@
 - [x] Install Laravel Horizon for queue monitoring
 - [x] Set up Vite build pipeline
 - [x] Configure `composer.json`/`package.json` scripts (lint, test, format)
-- [ ] Set up CI pipeline (lint, static analysis via PHPStan/Larastan, PHPUnit/Pest, `npm test`, `composer audit`/`npm audit`) — workflow files exist in `.github/workflows/` but aren't pushed yet (current GitHub token lacks `workflow` scope)
+- [x] Set up CI pipeline (lint, static analysis via PHPStan/Larastan, PHPUnit/Pest, `npm test`, `composer audit`/`npm audit`) — `.github/workflows/tests.yml` (PHPUnit) + `lint.yml` (Pint, Larastan level 5 with a baseline against pre-existing findings, Prettier, ESLint, non-blocking `composer audit`/`npm audit`), both live on GitHub Actions. Found and fixed a real CI-only failure while verifying this actually runs green: a test's datetime fixture used the wrong timezone convention, which only broke under CI's `.env.example`-default `APP_TIMEZONE=UTC` (see project memory / [15-Load-Test-Results.md](15-Load-Test-Results.md) sibling docs) — also updated `.env.example` to match the real `.env`'s timezone/app name so this class of divergence stops recurring.
 - [ ] Configure error tracking (Sentry or equivalent) — no Sentry DSN provided yet
 - [x] Set up local dev environment docs (README "Getting Started")
 - [x] Create base folder structure for Services/Repositories/Contracts (per [04-Architecture.md](04-Architecture.md) §2)

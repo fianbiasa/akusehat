@@ -1,0 +1,14 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+    - phpstan-baseline.neon
+
+parameters:
+    paths:
+        - app
+
+    # Level 5 catches real bugs (undefined methods/properties, wrong argument
+    # types, dead code) without the noise of full strict-typing enforcement
+    # this codebase was never written against - a reasonable middle ground
+    # for adopting static analysis on an existing 13-phase codebase rather
+    # than starting at level 5+ and drowning in retrofits.
+    level: 5
