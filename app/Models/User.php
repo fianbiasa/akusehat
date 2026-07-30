@@ -199,4 +199,56 @@ class User extends Authenticatable implements MustVerifyEmail
 
         return $value !== null ? (float) $value : null;
     }
+
+    public function coachProfile(): HasOne
+    {
+        return $this->hasOne(CoachProfile::class);
+    }
+
+    /** Members this user coaches (as the coach). */
+    public function coachedMembers(): HasMany
+    {
+        return $this->hasMany(CoachMember::class, 'coach_id');
+    }
+
+    /** This user's coach-assignment history (as the member). */
+    public function coachAssignments(): HasMany
+    {
+        return $this->hasMany(CoachMember::class, 'member_id');
+    }
+
+    public function activeCoachAssignment(): HasOne
+    {
+        return $this->hasOne(CoachMember::class, 'member_id')->where('status', 'active');
+    }
+
+    public function coachNotesWritten(): HasMany
+    {
+        return $this->hasMany(CoachNote::class, 'coach_id');
+    }
+
+    public function coachNotesAbout(): HasMany
+    {
+        return $this->hasMany(CoachNote::class, 'member_id');
+    }
+
+    public function conversations(): HasMany
+    {
+        return $this->hasMany(Conversation::class);
+    }
+
+    public function coachConversations(): HasMany
+    {
+        return $this->hasMany(Conversation::class, 'coach_id');
+    }
+
+    public function reviewsReceived(): HasMany
+    {
+        return $this->hasMany(Review::class, 'coach_id');
+    }
+
+    public function reviewsGiven(): HasMany
+    {
+        return $this->hasMany(Review::class, 'member_id');
+    }
 }

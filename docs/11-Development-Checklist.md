@@ -135,18 +135,20 @@
 
 ## Phase 8 — Coach Module
 
-- [ ] Migrations: `coach_profiles`, `coach_members`, `coach_notes`, `conversations`, `messages`, `reviews`
-- [ ] `CoachProfile` model + onboarding flow for coach accounts (Admin-created)
-- [ ] Assignment logic: `coach_members` create/reassign (ends old row, creates new)
-- [ ] Coach dashboard aggregation query (flagged concerns via `ai_memories`/`ai_recommendations`)
-- [ ] `chat()` capability wiring for AI-assistant conversations; coach_member conversations are plain messaging (no AI)
-- [ ] Real-time messaging (broadcast via Laravel Echo/Pusher-compatible channel) or polling fallback
-- [ ] API: coach members/notes/recommendations approve-reject/dashboard/reviews (§8–9 of [05-API-Specification.md](05-API-Specification.md))
-- [ ] React: Coach Dashboard + Member Detail per [wireframe/coach.md](../wireframe/coach.md)
-- [ ] React: Chat UI (shared component for coach_member and ai_assistant conversation types)
-- [ ] React: Review/rating submission (Member-facing, on program completion or periodically)
-- [ ] Feature test: recommendation approve/reject updates status + notifies Member
-- [ ] Feature test: private note visibility toggle
+- [x] Migrations: `coach_profiles`, `coach_members`, `coach_notes`, `conversations`, `messages`, `reviews` — `coach_members`' literal `UNIQUE(coach_id, member_id, status)` (itself flagged "Unique-ish" in the Database Dictionary) is dropped; it would break re-assigning a member back to a coach they'd previously left (a second `(coach_id, member_id, 'ended')` row collides with the first). "One active assignment per member" is enforced app-side instead, same precedent as Phase 5's `user_ai_settings`.
+- [x] `CoachProfile` model + onboarding flow for coach accounts (Admin-created) — `Admin\UserController::store()` auto-creates a blank `coach_profiles` row whenever the created user's role is `coach`, so every coach account always has one; the coach self-service edits their own bio/specialization/certification at `/coach/profile`.
+- [x] Assignment logic: `coach_members` create/reassign (ends old row, creates new) — `CoachAssignmentService::assign()` also syncs the member's active `user_programs.coach_id` so Phase 6's `AuthorizesProgramAccess` (Program module) and this phase's own coach-scoping stay consistent. Caught a real bug here: using the `$member->activeCoachAssignment` *property* accessor (not the method-call form) caches the relation per-instance, so calling `assign()` then `unassign()` on the same `$member` object reused a stale cached `null` and silently skipped ending the row - fixed by always using `activeCoachAssignment()->first()`.
+- [x] Coach dashboard aggregation query (flagged concerns via `ai_memories`/`ai_recommendations`) — scoped to `coach_members` where `coach_id=current coach` and `status=active`, per wireframe/coach.md.
+- [x] `chat()` capability wiring for AI-assistant conversations; coach_member conversations are plain messaging (no AI) — reuses Phase 5's `daily_chat` template; the AI call is processed synchronously (not queued) since chat is an actively-watched conversation, not a background generation task.
+- [x] Real-time messaging (broadcast via Laravel Echo/Pusher-compatible channel) or polling fallback — polling fallback implemented (no Echo/Pusher/Reverb credentials in this environment); the frontend re-fetches messages every 4s.
+- [x] API: coach members/notes/recommendations approve-reject/dashboard/reviews (§8–9 of [05-API-Specification.md](05-API-Specification.md)) — reused Phase 1's already-seeded `member.view`/`program.review`/`note.manage`/`chat.send` permissions (anticipated back then, unused until now) rather than inventing a parallel role-check middleware; added one new `coach_members.manage` permission for the Admin assignment endpoint.
+- [x] React: Coach Dashboard + Member Detail per [wireframe/coach.md](../wireframe/coach.md)
+- [x] React: Chat UI (shared component for coach_member and ai_assistant conversation types)
+- [x] React: Review/rating submission (Member-facing, on program completion or periodically) — added to the Program detail page, shown whenever that program has an assigned coach.
+- [x] Feature test: recommendation approve/reject updates status + notifies Member
+- [x] Feature test: private note visibility toggle
+- Also extended Phase 7's Progress page to accept `?user_id=` for the Coach's read-only view (wireframe/progress.md's "Coach viewing this same page... scoped to the selected member" was written in Phase 7 but unreachable until this phase's coach-assignment mechanism existed) — non-shared private photos are filtered out for non-owners.
+- 278/278 tests passing.
 
 ## Phase 9 — Admin Panel
 

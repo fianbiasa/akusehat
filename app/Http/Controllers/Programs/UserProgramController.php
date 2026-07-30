@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Programs\Concerns\AuthorizesProgramAccess;
 use App\Jobs\GenerateProgramJob;
 use App\Models\Program;
+use App\Models\Review;
 use App\Models\UserProgram;
 use App\Services\Program\ProgramGenerationStatus;
 use Illuminate\Http\JsonResponse;
@@ -63,12 +64,17 @@ class UserProgramController extends Controller
         $userProgram->load(['program', 'goals' => fn ($q) => $q->latest(), 'coach:id,name']);
         $date = Carbon::today()->toDateString();
 
+        $myReview = $userProgram->coach_id && $userProgram->user_id === $request->user()->id
+            ? Review::where('coach_id', $userProgram->coach_id)->where('member_id', $request->user()->id)->first()
+            : null;
+
         return Inertia::render('programs/show', [
             'userProgram' => $userProgram,
             'weeklyPlans' => $userProgram->weeklyPlans()->orderBy('week_number')->get(),
             'mealPlans' => $userProgram->mealPlans()->with('items.kbFood')->whereDate('plan_date', $date)->get(),
             'workoutPlans' => $userProgram->workoutPlans()->with('items.kbExercise')->whereDate('plan_date', $date)->get(),
             'generateStatus' => ProgramGenerationStatus::get($userProgram->id, $date),
+            'myReview' => $myReview,
         ]);
     }
 

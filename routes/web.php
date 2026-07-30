@@ -21,3 +21,5 @@ require __DIR__.'/kb.php';
 require __DIR__.'/ai.php';
 require __DIR__.'/programs.php';
 require __DIR__.'/progress.php';
+require __DIR__.'/coach.php';
+require __DIR__.'/chat.php';

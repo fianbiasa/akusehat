@@ -5,7 +5,7 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { usePermission } from '@/hooks/use-permission';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Bot, Folder, LayoutGrid, ListChecks, ShieldCheck, TrendingUp, Users } from 'lucide-react';
+import { BookOpen, Bot, Folder, LayoutGrid, ListChecks, MessageCircle, ShieldCheck, TrendingUp, Users } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -18,6 +18,14 @@ const mainNavItems: NavItem[] = [
         title: 'Progress',
         url: '/progress',
         icon: TrendingUp,
+    },
+];
+
+const coachNavItems: NavItem[] = [
+    {
+        title: 'Dashboard Coach',
+        url: '/coach/dashboard',
+        icon: LayoutGrid,
     },
 ];
 
@@ -58,7 +66,9 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
-    const { hasPermission } = usePermission();
+    const { hasPermission, hasRole } = usePermission();
+
+    const chatNavItems: NavItem[] = hasPermission('chat.send') ? [{ title: 'Percakapan', url: '/conversations', icon: MessageCircle }] : [];
 
     return (
         <Sidebar collapsible="icon" variant="inset">
@@ -75,7 +85,7 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                {hasRole('coach') ? <NavMain items={[...coachNavItems, ...chatNavItems]} /> : <NavMain items={[...mainNavItems, ...chatNavItems]} />}
                 {hasPermission('users.manage') && <NavMain items={adminNavItems} label="Admin" />}
             </SidebarContent>
 

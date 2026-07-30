@@ -30,6 +30,8 @@ function filterByRange<T extends { logged_at?: string; scored_at?: string }>(ite
 }
 
 export default function ProgressIndex({
+    readOnly,
+    memberName,
     weightLogs,
     waistLogs,
     healthScores,
@@ -39,6 +41,8 @@ export default function ProgressIndex({
     photos,
     checklistConsistency,
 }: {
+    readOnly: boolean;
+    memberName: string | null;
     weightLogs: WeightLog[];
     waistLogs: WaistLog[];
     healthScores: HealthScoreEntry[];
@@ -67,7 +71,7 @@ export default function ProgressIndex({
 
             <div className="flex flex-1 flex-col gap-4 p-4">
                 <div className="flex items-center justify-between">
-                    <h1 className="text-xl font-semibold">Progress</h1>
+                    <h1 className="text-xl font-semibold">{readOnly ? `Progress — ${memberName}` : 'Progress'}</h1>
                     <div className="flex gap-2">
                         {(['week', 'month', '90d'] as Range[]).map((r) => (
                             <Button key={r} size="sm" variant={range === r ? 'default' : 'outline'} onClick={() => setRange(r)}>
@@ -128,7 +132,7 @@ export default function ProgressIndex({
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between">
                             <CardTitle className="text-base">Berat Badan</CardTitle>
-                            <QuickLogDialog metric="weight" />
+                            {!readOnly && <QuickLogDialog metric="weight" />}
                         </CardHeader>
                         <CardContent>
                             {visibleWeights.length === 0 ? (
@@ -153,7 +157,7 @@ export default function ProgressIndex({
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between">
                             <CardTitle className="text-base">Lingkar Pinggang</CardTitle>
-                            <QuickLogDialog metric="waist" />
+                            {!readOnly && <QuickLogDialog metric="waist" />}
                         </CardHeader>
                         <CardContent>
                             {visibleWaists.length === 0 ? (
@@ -178,7 +182,7 @@ export default function ProgressIndex({
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between">
                             <CardTitle className="text-base">Tidur (avg 7 hari)</CardTitle>
-                            <QuickLogDialog metric="sleep" />
+                            {!readOnly && <QuickLogDialog metric="sleep" />}
                         </CardHeader>
                         <CardContent>
                             <p className="text-2xl font-semibold">{sleepAvg7d} jam</p>
@@ -188,7 +192,7 @@ export default function ProgressIndex({
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between">
                             <CardTitle className="text-base">Air Minum (avg/hari)</CardTitle>
-                            <QuickLogDialog metric="water" />
+                            {!readOnly && <QuickLogDialog metric="water" />}
                         </CardHeader>
                         <CardContent>
                             <p className="text-2xl font-semibold">
@@ -201,7 +205,7 @@ export default function ProgressIndex({
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between">
                         <CardTitle>Foto Progress</CardTitle>
-                        <UploadPhotoDialog />
+                        {!readOnly && <UploadPhotoDialog />}
                     </CardHeader>
                     <CardContent>
                         {photos.length === 0 ? (
@@ -209,7 +213,7 @@ export default function ProgressIndex({
                         ) : (
                             <div className="flex flex-wrap gap-4">
                                 {photos.map((photo) => (
-                                    <PhotoCard key={photo.id} photo={photo} />
+                                    <PhotoCard key={photo.id} photo={photo} readOnly={readOnly} />
                                 ))}
                             </div>
                         )}
@@ -369,7 +373,7 @@ function UploadPhotoDialog() {
     );
 }
 
-function PhotoCard({ photo }: { photo: Photo }) {
+function PhotoCard({ photo, readOnly }: { photo: Photo; readOnly: boolean }) {
     const toggleShare = () => {
         router.patch(`/progress/photos/${photo.id}`, { is_private: !photo.is_private }, { preserveScroll: true });
     };
@@ -382,20 +386,30 @@ function PhotoCard({ photo }: { photo: Photo }) {
         <div className="w-32 space-y-2">
             <img src={photo.url} alt={`Progress ${photo.angle} ${photo.logged_at}`} className="aspect-square w-32 rounded-md object-cover" />
             <p className="text-muted-foreground text-center text-xs">{photo.logged_at}</p>
-            <div className="flex items-center justify-center gap-1 text-xs">
-                <Checkbox checked={!photo.is_private} onCheckedChange={toggleShare} id={`share-${photo.id}`} />
-                <Label htmlFor={`share-${photo.id}`} className="cursor-pointer text-xs font-normal">
-                    Bagikan ke Coach
-                </Label>
-            </div>
-            {!photo.is_private && (
-                <Badge variant="secondary" className="w-full justify-center text-xs">
-                    Dibagikan
-                </Badge>
+            {readOnly ? (
+                !photo.is_private && (
+                    <Badge variant="secondary" className="w-full justify-center text-xs">
+                        Dibagikan
+                    </Badge>
+                )
+            ) : (
+                <>
+                    <div className="flex items-center justify-center gap-1 text-xs">
+                        <Checkbox checked={!photo.is_private} onCheckedChange={toggleShare} id={`share-${photo.id}`} />
+                        <Label htmlFor={`share-${photo.id}`} className="cursor-pointer text-xs font-normal">
+                            Bagikan ke Coach
+                        </Label>
+                    </div>
+                    {!photo.is_private && (
+                        <Badge variant="secondary" className="w-full justify-center text-xs">
+                            Dibagikan
+                        </Badge>
+                    )}
+                    <Button size="sm" variant="ghost" className="text-destructive w-full" onClick={remove}>
+                        Hapus
+                    </Button>
+                </>
             )}
-            <Button size="sm" variant="ghost" className="text-destructive w-full" onClick={remove}>
-                Hapus
-            </Button>
         </div>
     );
 }

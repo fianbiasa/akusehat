@@ -44,11 +44,18 @@ class UserController extends Controller
             'status' => ['required', Rule::in(['active', 'suspended', 'pending'])],
         ]);
 
-        User::create([
+        $user = User::create([
             ...$validated,
             'password' => Hash::make($validated['password']),
             'email_verified_at' => now(),
         ]);
+
+        // Coach accounts are Admin-created (FR-COACH); the coach fills in
+        // their own bio/specialization afterward, so the row always
+        // exists rather than every coach-facing query null-coalescing.
+        if (Role::find($validated['role_id'])?->name === 'coach') {
+            $user->coachProfile()->create([]);
+        }
 
         return back();
     }

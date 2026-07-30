@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AiProviderController;
+use App\Http\Controllers\Admin\CoachAssignmentController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\RuleEngineController;
 use App\Http\Controllers\Admin\UserController;
@@ -33,5 +34,11 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
         Route::patch('providers/{provider}', [AiProviderController::class, 'update'])->name('providers.update');
         Route::post('providers/{provider}/models', [AiProviderController::class, 'storeModel'])->name('providers.models.store');
         Route::patch('models/{model}', [AiProviderController::class, 'updateModel'])->name('models.update');
+    });
+
+    Route::middleware('permission:coach_members.manage')->group(function () {
+        Route::get('coach-members', [CoachAssignmentController::class, 'index'])->name('coach-members.index');
+        Route::post('coach-members', [CoachAssignmentController::class, 'store'])->name('coach-members.store');
+        Route::delete('coach-members/{member}', [CoachAssignmentController::class, 'destroy'])->name('coach-members.destroy');
     });
 });

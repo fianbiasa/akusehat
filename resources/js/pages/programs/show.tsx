@@ -1,9 +1,11 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
+import { FormEventHandler, useState } from 'react';
 
 type Goal = {
     id: number;
@@ -51,18 +53,22 @@ type WorkoutPlan = {
     items: { id: number; sets: number | null; reps: number | null; custom_name: string | null; kb_exercise: { name: string } | null }[];
 };
 
+type MyReview = { rating: number; comment: string | null } | null;
+
 export default function ProgramShow({
     userProgram,
     weeklyPlans,
     mealPlans,
     workoutPlans,
     generateStatus,
+    myReview,
 }: {
     userProgram: UserProgram;
     weeklyPlans: WeeklyPlan[];
     mealPlans: MealPlan[];
     workoutPlans: WorkoutPlan[];
     generateStatus: string;
+    myReview: MyReview;
 }) {
     const breadcrumbs: BreadcrumbItem[] = [
         { title: 'Dashboard', href: '/dashboard' },
@@ -186,7 +192,57 @@ export default function ProgramShow({
                         )}
                     </CardContent>
                 </Card>
+
+                {userProgram.coach && <ReviewCard userProgramId={userProgram.id} coachName={userProgram.coach.name} myReview={myReview} />}
             </div>
         </AppLayout>
+    );
+}
+
+function ReviewCard({ userProgramId, coachName, myReview }: { userProgramId: number; coachName: string; myReview: MyReview }) {
+    const [rating, setRating] = useState(myReview?.rating ?? 0);
+    const { data, setData, post, processing } = useForm({ rating: myReview?.rating ?? 0, comment: myReview?.comment ?? '' });
+
+    const submit: FormEventHandler = (e) => {
+        e.preventDefault();
+        post(`/user-programs/${userProgramId}/review`, { preserveScroll: true });
+    };
+
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle>Nilai Coach {coachName}</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <form onSubmit={submit} className="space-y-3">
+                    <div className="flex gap-1">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                            <button
+                                key={star}
+                                type="button"
+                                onClick={() => {
+                                    setRating(star);
+                                    setData('rating', star);
+                                }}
+                                className={`text-2xl ${star <= rating ? 'text-yellow-500' : 'text-muted-foreground'}`}
+                                aria-label={`${star} bintang`}
+                            >
+                                ★
+                            </button>
+                        ))}
+                    </div>
+                    <Textarea
+                        value={data.comment}
+                        onChange={(e) => setData('comment', e.target.value)}
+                        placeholder="Komentar (opsional)"
+                        rows={2}
+                        maxLength={500}
+                    />
+                    <Button type="submit" size="sm" disabled={processing || rating === 0}>
+                        {myReview ? 'Perbarui Ulasan' : 'Kirim Ulasan'}
+                    </Button>
+                </form>
+            </CardContent>
+        </Card>
     );
 }
