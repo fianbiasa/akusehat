@@ -120,16 +120,18 @@
 
 ## Phase 7 — Progress Tracking & Health Score
 
-- [ ] Migrations: `weight_logs`, `waist_logs`, `body_fat_logs`, `progress_photos`, `water_intake_logs`, `sleep_logs`, `health_scores`
-- [ ] `HealthScoreService`: weighted composite calculation (formula in [08-Knowledge-Base.md](08-Knowledge-Base.md) §5)
-- [ ] `ComputeHealthScoreJob` (daily scheduled)
-- [ ] `analyze()` capability wiring for Health Score `explanation` generation
-- [ ] API: weight/waist/body-fat/sleep/water/photos/health-score endpoints (§7 of [05-API-Specification.md](05-API-Specification.md))
-- [ ] File upload handling for progress photos (validation, private storage, signed URLs)
-- [ ] React: Progress page (charts, photo timeline, consistency grid) per [wireframe/progress.md](../wireframe/progress.md)
-- [ ] Charting library integration (time-series weight/waist/health-score trend)
-- [ ] Unit tests: Health Score formula against known component inputs
-- [ ] Feature test: photo privacy default + share-to-coach toggle
+- [x] Migrations: `weight_logs`, `waist_logs`, `body_fat_logs`, `progress_photos`, `water_intake_logs`, `sleep_logs`, `health_scores` — `weight_logs`/`waist_logs` now supersede `body_measurements` (Phase 3) as the primary weight/waist source (`User::latestWeightKg()`/`latestWaistCm()` check the new tables first, falling back to `body_measurements` then `health_profiles.initial_weight_kg`), per the forward-looking comment left in Phase 3. `weekly_plans`/`ai_memories` etc. untouched.
+- [x] `HealthScoreService`: weighted composite calculation (formula in [08-Knowledge-Base.md](08-Knowledge-Base.md) §5) — the doc names 8 weighted components and their "basis" but not an exact decay curve per component, so each component's scoring function is designed and documented inline in the service (e.g. BMI: 2 points lost per unit outside 18.5-24.9; waist: IDF Asian-population cutoffs, male <90cm/female <80cm; disease management: proxied via `meal_plans.is_completed` since there's no per-meal "what did you actually eat" logging in this app). 17 unit tests pin down every component against known inputs.
+- [x] `ComputeHealthScoreJob` (daily scheduled)
+- [x] `analyze()` capability wiring for Health Score `explanation` generation — new `health_score_explain` prompt template (`prompts/health-score-explain.txt`), explicitly instructed to explain, never recompute, the score; falls back to a deterministic "your weakest component is X" explanation when no AI provider is available.
+- [x] API: weight/waist/body-fat/sleep/water/photos/health-score endpoints (§7 of [05-API-Specification.md](05-API-Specification.md)) — M/C/A access via a `?user_id=` param checked against `user_programs.coach_id` (same pattern as the Programs module), default is the caller's own data.
+- [x] File upload handling for progress photos (validation, private storage, signed URLs) — stored on the `local` disk (`storage/app/private`, never web-accessible directly) regardless of `is_private`; served only via a 30-minute temporary signed route. `is_private` toggling is the "Bagikan ke Coach" mechanism from the wireframe, not a separate column.
+- [x] React: Progress page (charts, photo timeline, consistency grid) per [wireframe/progress.md](../wireframe/progress.md) — the Minggu/Bulan/90-Hari range selector filters an already-loaded 90-day dataset client-side rather than issuing a fresh request per range (the dataset is small enough that a round-trip per range change would be pure overhead). Health Score card added to the Dashboard (deferred from Phase 6).
+- [x] Charting library integration (time-series weight/waist/health-score trend) — added `recharts`; no shadcn chart wrapper existed yet, so charts are built directly against it.
+- [x] Unit tests: Health Score formula against known component inputs
+- [x] Feature test: photo privacy default + share-to-coach toggle
+- Two bugs found by live HTTP smoke testing (both pre-existing, from Phase 3/6, not introduced this phase): (1) `HealthProfileService`/`AIMemoryService`/etc. all independently duplicated the same 2-3-way weight-source fallback chain — consolidated into `User::latestWeightKg()`/`latestWaistCm()` while wiring in the new tables, rather than adding a 4th copy. (2) A response array manually rebuilt from a date-cast Eloquent attribute (e.g. `['start_date' => $model->start_date]`) silently bypasses the `'date:Y-m-d'` cast format — only the model's own `toArray()`/`toJson()` respects it. Carbon's default JSON serialization (a full UTC-shifted ISO8601 timestamp) takes over instead, identical in spirit to the Phase 3 date-cast gotcha but triggered differently. Found on `ProgressPhotoController`/`ProgressPageController`/`DashboardController`; fixed by explicitly calling `->toDateString()` at every such site, each with a regression test. This bug is pure PHP/Carbon behavior (not MySQL-vs-SQLite), so it was independently confirmed reproducible under the PHPUnit suite's SQLite connection too, once the missing assertions were added — a reminder that "not caught by tests" and "untestable under SQLite" are different failure modes worth telling apart.
+- 238/238 tests passing.
 
 ## Phase 8 — Coach Module
 

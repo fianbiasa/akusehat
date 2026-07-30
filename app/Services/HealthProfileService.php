@@ -9,9 +9,8 @@ class HealthProfileService
 {
     /**
      * BMI/BMR (Mifflin-St Jeor)/TDEE per docs/08-Knowledge-Base.md §4.
-     * Weight comes from the most recent body_measurements row, falling
-     * back to health_profiles.initial_weight_kg - weight_logs (Phase 7)
-     * will become the primary trigger once it exists.
+     * Weight comes from User::latestWeightKg() (weight_logs, then
+     * body_measurements, then the onboarding-time initial_weight_kg).
      */
     private const ACTIVITY_MULTIPLIERS = [
         'sedentary' => 1.2,
@@ -28,8 +27,7 @@ class HealthProfileService
             return $profile;
         }
 
-        $weightKg = $user->bodyMeasurements()->whereNotNull('weight_kg')->latest('measured_at')->value('weight_kg')
-            ?? $profile->initial_weight_kg;
+        $weightKg = $user->latestWeightKg();
 
         if (! $weightKg) {
             return $profile;

@@ -8,8 +8,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 
 /**
- * "Today view" per wireframe/dashboard.md. Health Score card is Phase 7
- * (health_scores doesn't exist yet) - omitted here rather than faked.
+ * "Today view" per wireframe/dashboard.md.
  */
 class DashboardController extends Controller
 {
@@ -36,20 +35,29 @@ class DashboardController extends Controller
                 ->first();
         }
 
-        $latestMeasurement = $user->bodyMeasurements()->whereNotNull('weight_kg')->latest('measured_at')->first(['weight_kg', 'measured_at']);
+        $latestWeightLog = $user->weightLogs()->latest('logged_at')->first(['weight_kg', 'logged_at']);
+        $latestHealthScore = $user->healthScores()->latest('scored_at')->first(['score', 'scored_at']);
+        $yesterdayScore = $latestHealthScore
+            ? $user->healthScores()->where('scored_at', '<', $latestHealthScore->scored_at)->latest('scored_at')->value('score')
+            : null;
 
         return Inertia::render('dashboard', [
             'selectedProgramId' => $primaryProgram?->id,
             'activePrograms' => $activePrograms->map(fn ($p) => [
                 'id' => $p->id,
                 'program_name' => $p->program->name,
-                'start_date' => $p->start_date,
-                'end_date' => $p->end_date,
+                'start_date' => $p->start_date->toDateString(),
+                'end_date' => $p->end_date?->toDateString(),
                 'day_number' => Carbon::parse($p->start_date)->diffInDays(Carbon::today()) + 1,
                 'duration_days' => $p->program->default_duration_days,
             ]),
             'checklist' => $checklist,
-            'latestMeasurement' => $latestMeasurement,
+            'latestMeasurement' => $latestWeightLog ? ['weight_kg' => $latestWeightLog->weight_kg, 'measured_at' => $latestWeightLog->logged_at->toDateString()] : null,
+            'healthScore' => $latestHealthScore ? [
+                'score' => (float) $latestHealthScore->score,
+                'scored_at' => $latestHealthScore->scored_at->toDateString(),
+                'delta' => $yesterdayScore !== null ? round((float) $latestHealthScore->score - (float) $yesterdayScore, 1) : null,
+            ] : null,
             'weeklyReview' => $weeklyReview ? [
                 'id' => $weeklyReview->id,
                 'user_program_id' => $primaryProgram->id,

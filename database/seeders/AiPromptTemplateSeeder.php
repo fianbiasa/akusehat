@@ -35,6 +35,13 @@ class AiPromptTemplateSeeder extends Seeder
                 'response_schema' => $analyzeSchema,
             ],
             [
+                'key' => 'health_score_explain',
+                'file' => 'health-score-explain.txt',
+                'purpose' => "Narrative explanation of a member's daily Health Score (analyze() capability, FR-TRK-03) - explains, never recomputes.",
+                'variables' => ['user_profile', 'health_score_breakdown', 'progress_snapshot'],
+                'response_schema' => $analyzeSchema,
+            ],
+            [
                 'key' => 'meal_plan',
                 'file' => 'meal-plan.txt',
                 'purpose' => "A full day's meal plan (generatePlan meal portion / mealSuggestion).",

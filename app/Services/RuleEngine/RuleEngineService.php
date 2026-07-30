@@ -56,16 +56,13 @@ class RuleEngineService
         $health = $user->healthProfile;
         $lifestyle = $user->lifestyleProfile;
 
-        $weightKg = $user->bodyMeasurements()->whereNotNull('weight_kg')->latest('measured_at')->value('weight_kg')
-            ?? $health?->initial_weight_kg;
-
         return [
             'bmi' => $health?->bmi !== null ? (float) $health->bmi : null,
             'age' => $health?->date_of_birth?->age,
             'gender' => $health?->gender,
             'activity_level' => $lifestyle?->activity_level,
             'diseases' => $user->diseases()->with('disease:id,slug')->get()->pluck('disease.slug')->filter()->values()->all(),
-            'weight_kg' => $weightKg !== null ? (float) $weightKg : null,
+            'weight_kg' => $user->latestWeightKg(),
             'tdee' => $health?->tdee !== null ? (float) $health->tdee : null,
         ];
     }

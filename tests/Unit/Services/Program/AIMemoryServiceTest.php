@@ -95,8 +95,8 @@ class AIMemoryServiceTest extends TestCase
         $user = User::factory()->create();
         $this->userProgramFor($user);
 
-        $user->bodyMeasurements()->create(['measured_at' => today()->subDays(13), 'weight_kg' => 80]);
-        $user->bodyMeasurements()->create(['measured_at' => today(), 'weight_kg' => 78.5]);
+        $user->weightLogs()->create(['logged_at' => today()->subDays(13), 'weight_kg' => 80, 'created_at' => now()]);
+        $user->weightLogs()->create(['logged_at' => today(), 'weight_kg' => 78.5, 'created_at' => now()]);
 
         app(AIMemoryService::class)->scan($user);
 

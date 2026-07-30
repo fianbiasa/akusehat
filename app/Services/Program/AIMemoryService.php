@@ -87,11 +87,10 @@ class AIMemoryService
 
     private function detectWeightTrend(User $user): void
     {
-        $measurements = $user->bodyMeasurements()
-            ->whereNotNull('weight_kg')
-            ->where('measured_at', '>=', Carbon::today()->subDays(13))
-            ->orderBy('measured_at')
-            ->get(['weight_kg', 'measured_at']);
+        $measurements = $user->weightLogs()
+            ->where('logged_at', '>=', Carbon::today()->subDays(13))
+            ->orderBy('logged_at')
+            ->get(['weight_kg', 'logged_at']);
 
         if ($measurements->count() < 2) {
             return;

@@ -20,3 +20,4 @@ require __DIR__.'/profile.php';
 require __DIR__.'/kb.php';
 require __DIR__.'/ai.php';
 require __DIR__.'/programs.php';
+require __DIR__.'/progress.php';

@@ -5,7 +5,7 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { usePermission } from '@/hooks/use-permission';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Bot, Folder, LayoutGrid, ListChecks, ShieldCheck, Users } from 'lucide-react';
+import { BookOpen, Bot, Folder, LayoutGrid, ListChecks, ShieldCheck, TrendingUp, Users } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -13,6 +13,11 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         url: '/dashboard',
         icon: LayoutGrid,
+    },
+    {
+        title: 'Progress',
+        url: '/progress',
+        icon: TrendingUp,
     },
 ];
 

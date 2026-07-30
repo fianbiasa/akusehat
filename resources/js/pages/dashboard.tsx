@@ -31,17 +31,25 @@ type WeeklyReview = {
     ai_review: { adjustments?: { type: string; detail: string }[] } | null;
 };
 
+type HealthScore = {
+    score: number;
+    scored_at: string;
+    delta: number | null;
+};
+
 export default function Dashboard({
     selectedProgramId,
     activePrograms,
     checklist,
     latestMeasurement,
+    healthScore,
     weeklyReview,
 }: {
     selectedProgramId: number | null;
     activePrograms: ActiveProgram[];
     checklist: ChecklistItem[];
     latestMeasurement: { weight_kg: number; measured_at: string } | null;
+    healthScore: HealthScore | null;
     weeklyReview: WeeklyReview | null;
 }) {
     const primaryProgram = activePrograms.find((p) => p.id === selectedProgramId) ?? activePrograms[0];
@@ -82,6 +90,29 @@ export default function Dashboard({
                     <div className="grid gap-4 md:grid-cols-2">
                         <Card>
                             <CardHeader>
+                                <CardTitle>Health Score</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                {healthScore ? (
+                                    <>
+                                        <p className="text-3xl font-bold">{healthScore.score} / 100</p>
+                                        {healthScore.delta !== null && (
+                                            <p className={`text-sm ${healthScore.delta >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                                {healthScore.delta >= 0 ? '▲' : '▼'} {Math.abs(healthScore.delta)} dari kemarin
+                                            </p>
+                                        )}
+                                        <Button asChild size="sm" variant="outline" className="mt-3">
+                                            <Link href="/progress">Lihat Detail</Link>
+                                        </Button>
+                                    </>
+                                ) : (
+                                    <p className="text-muted-foreground text-sm">Skor akan muncul setelah dihitung otomatis besok.</p>
+                                )}
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardHeader>
                                 <CardTitle>{primaryProgram.program_name}</CardTitle>
                             </CardHeader>
                             <CardContent>
@@ -96,25 +127,6 @@ export default function Dashboard({
                                         }}
                                     />
                                 </div>
-                            </CardContent>
-                        </Card>
-
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Berat Badan</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                {latestMeasurement ? (
-                                    <p className="text-2xl font-semibold">
-                                        {latestMeasurement.weight_kg} kg
-                                        <span className="text-muted-foreground ml-2 text-sm font-normal">per {latestMeasurement.measured_at}</span>
-                                    </p>
-                                ) : (
-                                    <p className="text-muted-foreground text-sm">Belum ada data berat badan.</p>
-                                )}
-                                <Button asChild size="sm" variant="outline" className="mt-3">
-                                    <Link href="/profile/health">Log Berat +</Link>
-                                </Button>
                             </CardContent>
                         </Card>
                     </div>
@@ -137,6 +149,27 @@ export default function Dashboard({
                                         </li>
                                     ))}
                                 </ul>
+                            )}
+                        </CardContent>
+                    </Card>
+                )}
+
+                {primaryProgram && (
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between">
+                            <CardTitle>Berat Badan</CardTitle>
+                            <Button asChild size="sm" variant="outline">
+                                <Link href="/progress">Log Berat +</Link>
+                            </Button>
+                        </CardHeader>
+                        <CardContent>
+                            {latestMeasurement ? (
+                                <p className="text-2xl font-semibold">
+                                    {latestMeasurement.weight_kg} kg
+                                    <span className="text-muted-foreground ml-2 text-sm font-normal">per {latestMeasurement.measured_at}</span>
+                                </p>
+                            ) : (
+                                <p className="text-muted-foreground text-sm">Belum ada data berat badan.</p>
                             )}
                         </CardContent>
                     </Card>

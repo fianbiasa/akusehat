@@ -139,4 +139,64 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Reminder::class);
     }
+
+    public function weightLogs(): HasMany
+    {
+        return $this->hasMany(WeightLog::class);
+    }
+
+    public function waistLogs(): HasMany
+    {
+        return $this->hasMany(WaistLog::class);
+    }
+
+    public function bodyFatLogs(): HasMany
+    {
+        return $this->hasMany(BodyFatLog::class);
+    }
+
+    public function waterIntakeLogs(): HasMany
+    {
+        return $this->hasMany(WaterIntakeLog::class);
+    }
+
+    public function sleepLogs(): HasMany
+    {
+        return $this->hasMany(SleepLog::class);
+    }
+
+    public function progressPhotos(): HasMany
+    {
+        return $this->hasMany(ProgressPhoto::class);
+    }
+
+    public function healthScores(): HasMany
+    {
+        return $this->hasMany(HealthScore::class);
+    }
+
+    /**
+     * weight_logs (Phase 7's dedicated daily-tracking table) takes
+     * precedence over body_measurements (Phase 3's health-profile
+     * snapshot table) per the forward-looking comment left in
+     * MapOnboardingAnswersToHealthProfile - both tables coexist in
+     * mysql.sql for different concerns, but anything asking "what does
+     * this user currently weigh" should prefer the newer source.
+     */
+    public function latestWeightKg(): ?float
+    {
+        $value = $this->weightLogs()->latest('logged_at')->value('weight_kg')
+            ?? $this->bodyMeasurements()->whereNotNull('weight_kg')->latest('measured_at')->value('weight_kg')
+            ?? $this->healthProfile?->initial_weight_kg;
+
+        return $value !== null ? (float) $value : null;
+    }
+
+    public function latestWaistCm(): ?float
+    {
+        $value = $this->waistLogs()->latest('logged_at')->value('waist_cm')
+            ?? $this->bodyMeasurements()->whereNotNull('waist_cm')->latest('measured_at')->value('waist_cm');
+
+        return $value !== null ? (float) $value : null;
+    }
 }

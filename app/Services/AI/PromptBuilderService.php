@@ -75,8 +75,7 @@ class PromptBuilderService
             'age' => $health?->date_of_birth?->age,
             'gender' => $health?->gender,
             'height_cm' => $health?->height_cm,
-            'weight_kg' => $user->bodyMeasurements()->whereNotNull('weight_kg')->latest('measured_at')->value('weight_kg')
-                ?? $health?->initial_weight_kg,
+            'weight_kg' => $user->latestWeightKg(),
             'activity_level' => $lifestyle?->activity_level,
             'diseases' => $user->diseases()->with('disease:id,name')->get()->pluck('disease.name')->values(),
             'allergies' => $user->allergies()->pluck('allergen')->values(),
@@ -118,14 +117,11 @@ class PromptBuilderService
             ->toArray();
     }
 
-    /**
-     * weight_logs/checklist_items (Phase 7) don't exist yet - built from
-     * body_measurements (Phase 3) in the meantime.
-     */
     private function resolveProgressSnapshot(User $user): array
     {
         return [
-            'recent_measurements' => $user->bodyMeasurements()->orderByDesc('measured_at')->limit(7)->get(['measured_at', 'weight_kg', 'waist_cm']),
+            'recent_weight_logs' => $user->weightLogs()->orderByDesc('logged_at')->limit(7)->get(['logged_at', 'weight_kg']),
+            'recent_waist_logs' => $user->waistLogs()->orderByDesc('logged_at')->limit(7)->get(['logged_at', 'waist_cm']),
         ];
     }
 
