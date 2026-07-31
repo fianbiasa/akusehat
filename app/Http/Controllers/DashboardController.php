@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Program\ProgramGenerationStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Inertia\Inertia;
@@ -54,6 +55,7 @@ class DashboardController extends Controller
                 'duration_days' => $p->program->default_duration_days,
             ]),
             'checklist' => $checklist,
+            'generateStatus' => $primaryProgram ? ProgramGenerationStatus::get($primaryProgram->id, $today) : null,
             'latestMeasurement' => $latestWeightLog ? ['weight_kg' => $latestWeightLog->weight_kg, 'measured_at' => $latestWeightLog->logged_at->toDateString()] : null,
             'healthScore' => $latestHealthScore ? [
                 'score' => (float) $latestHealthScore->score,

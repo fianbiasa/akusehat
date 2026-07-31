@@ -21,6 +21,16 @@ class GenerateProgramJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    /**
+     * Default queue worker timeout (60s) isn't enough: this makes 2
+     * sequential real AI calls (meal_plan, workout_plan), each up to 3
+     * attempts (docs/06-AI-Provider-Interface.md retry policy) - found via
+     * live smoke testing with a real API key for the first time, every
+     * prior run had used the instant Rule-Engine fallback with no
+     * provider configured, so this never surfaced before.
+     */
+    public int $timeout = 240;
+
     public function __construct(public UserProgram $userProgram, public string $date) {}
 
     public function handle(ProgramGenerationService $service): void

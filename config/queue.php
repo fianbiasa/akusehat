@@ -67,7 +67,13 @@ return [
             'driver' => 'redis',
             'connection' => env('REDIS_QUEUE_CONNECTION', 'default'),
             'queue' => env('REDIS_QUEUE', 'default'),
-            'retry_after' => (int) env('REDIS_QUEUE_RETRY_AFTER', 90),
+            // 300s, not Laravel's 90s default: GenerateProgramJob makes up
+            // to 2 sequential real AI calls, each up to 3 attempts x ~30s
+            // worst case (docs/06-AI-Provider-Interface.md retry policy).
+            // Must stay comfortably above that job's own $timeout (240s)
+            // so a still-running job's Redis reservation can't expire and
+            // get picked up by a second worker mid-flight.
+            'retry_after' => (int) env('REDIS_QUEUE_RETRY_AFTER', 300),
             'block_for' => null,
             'after_commit' => false,
         ],

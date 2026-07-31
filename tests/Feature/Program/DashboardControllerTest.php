@@ -4,6 +4,7 @@ namespace Tests\Feature\Program;
 
 use App\Models\Program;
 use App\Models\User;
+use App\Services\Program\ProgramGenerationStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -61,6 +62,21 @@ class DashboardControllerTest extends TestCase
             ->where('latestMeasurement.measured_at', today()->toDateString())
             ->where('healthScore.scored_at', today()->toDateString())
         );
+    }
+
+    public function test_generate_status_is_exposed_when_a_regeneration_is_pending()
+    {
+        $user = User::factory()->create(['onboarding_completed_at' => now()]);
+        $program = Program::where('slug', 'diet-90-hari')->firstOrFail();
+        $userProgram = $user->programs()->create([
+            'program_id' => $program->id, 'status' => 'active',
+            'start_date' => today(), 'end_date' => today()->addDays(89), 'created_by' => 'ai',
+        ]);
+        ProgramGenerationStatus::markPending($userProgram->id, today()->toDateString());
+
+        $response = $this->actingAs($user)->get('/dashboard');
+
+        $response->assertInertia(fn ($page) => $page->where('generateStatus', 'pending'));
     }
 
     public function test_switching_the_program_query_param_selects_that_program()

@@ -125,6 +125,7 @@ This entire pipeline runs as a **queued job** (`GenerateProgramJob`), never sync
 
 | Job | Frequency | Purpose |
 |---|---|---|
+| `GenerateDailyProgramPlansJob` | Daily | Generates today's meal/workout plan + checklist for every active `user_program` that doesn't already have one — added Phase 14: this was previously only triggered on day 1 (onboarding) or manually via "Buat Ulang Rencana Hari Ini", so every program went dark after its first day |
 | `ScanAIMemoryJob` | Daily | Detect trends/stagnation/milestones per active `user_program`, write `ai_memories` |
 | `GenerateWeeklyReviewJob` | Weekly (per program's week boundary) | Calls `weeklyReview()`, writes `weekly_plans.ai_review` |
 | `ComputeHealthScoreJob` | Daily | Writes `health_scores` row per user with a completed onboarding |

@@ -52,6 +52,7 @@ export default function Dashboard({
     selectedProgramId,
     activePrograms,
     checklist,
+    generateStatus,
     latestMeasurement,
     healthScore,
     weeklyReview,
@@ -60,6 +61,7 @@ export default function Dashboard({
     selectedProgramId: number | null;
     activePrograms: ActiveProgram[];
     checklist: ChecklistItem[];
+    generateStatus: 'pending' | 'ready' | 'failed' | 'unknown' | null;
     latestMeasurement: { weight_kg: number; measured_at: string } | null;
     healthScore: HealthScore | null;
     weeklyReview: WeeklyReview | null;
@@ -69,6 +71,12 @@ export default function Dashboard({
 
     const toggleChecklist = (item: ChecklistItem) => {
         router.patch(`/checklist-items/${item.id}`, { is_checked: !item.is_checked }, { preserveScroll: true });
+    };
+
+    const generatePlan = () => {
+        if (primaryProgram) {
+            router.post(`/user-programs/${primaryProgram.id}/regenerate`, {}, { preserveScroll: true });
+        }
     };
 
     return (
@@ -152,7 +160,18 @@ export default function Dashboard({
                         </CardHeader>
                         <CardContent>
                             {checklist.length === 0 ? (
-                                <p className="text-muted-foreground text-sm">Rencana hari ini sedang disiapkan. Muat ulang halaman sebentar lagi.</p>
+                                generateStatus === 'pending' ? (
+                                    <p className="text-muted-foreground text-sm">Rencana hari ini sedang dibuat. Muat ulang halaman sebentar lagi.</p>
+                                ) : (
+                                    <div className="space-y-3">
+                                        <p className="text-muted-foreground text-sm">
+                                            Rencana hari ini belum dibuat.
+                                        </p>
+                                        <Button size="sm" onClick={generatePlan}>
+                                            Buat Rencana Hari Ini
+                                        </Button>
+                                    </div>
+                                )
                             ) : (
                                 <ul className="space-y-2">
                                     {checklist.map((item) => (

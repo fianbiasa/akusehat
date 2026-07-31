@@ -3,6 +3,7 @@
 use App\Jobs\ComputeHealthScoreJob;
 use App\Jobs\DispatchRemindersJob;
 use App\Jobs\EvaluateAchievementsJob;
+use App\Jobs\GenerateDailyProgramPlansJob;
 use App\Jobs\GenerateWeeklyReviewJob;
 use App\Jobs\PruneAIMemoryRelevanceJob;
 use App\Jobs\ScanAIMemoryJob;
@@ -18,6 +19,8 @@ Artisan::command('inspire', function () {
 
 // 04-Architecture.md §6 — Scheduled Jobs.
 Schedule::job(new DispatchRemindersJob)->everyMinute();
+
+Schedule::job(new GenerateDailyProgramPlansJob)->daily();
 
 Schedule::job(new ScanAIMemoryJob)->daily();
 

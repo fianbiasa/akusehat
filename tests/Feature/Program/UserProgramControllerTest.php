@@ -114,4 +114,25 @@ class UserProgramControllerTest extends TestCase
 
         Bus::assertDispatched(GenerateProgramJob::class, fn ($job) => $job->userProgram->is($userProgram));
     }
+
+    /**
+     * Regression test: the default 60s queue worker timeout isn't enough
+     * for this job's 2 sequential real AI calls - found via live smoke
+     * testing (the job was silently killed mid-generation every time a
+     * real provider key was used, since every prior test/run had used
+     * the instant Rule-Engine fallback instead).
+     */
+    public function test_generation_job_has_an_extended_timeout_for_sequential_ai_calls()
+    {
+        $user = $this->onboardedMember();
+        $program = Program::where('slug', 'diet-90-hari')->firstOrFail();
+        $userProgram = $user->programs()->create([
+            'program_id' => $program->id, 'status' => 'active',
+            'start_date' => today(), 'end_date' => today()->addDays(89), 'created_by' => 'ai',
+        ]);
+
+        $job = new GenerateProgramJob($userProgram, today()->toDateString());
+
+        $this->assertGreaterThan(60, $job->timeout);
+    }
 }
